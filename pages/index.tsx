@@ -3,24 +3,24 @@ import React from 'react';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen">
       <nav className="mx-2 sm:mx-10 border-b-2 border-gray-300">
         <div className="container mx-auto">
           <div className="flex items-center justify-between h-16">
             <div className="flex-shrink-0">
-              <Link href="/" className="text-xl font-bold text-gray-800">
+              <Link href="/" className="text-xl font-bold">
                 find bible scripture
               </Link>
             </div>
             <div className='hidden sm:block'>
-              <Link href="/search" className="p-2 bg-gray-700 hover:bg-gray-600 rounded-md text-lg font-medium">
+              <Link href="/search" className="p-2 text-white bg-gray-800 hover:bg-gray-700 rounded-md text-lg font-medium">
                 Sign Up
               </Link>
             </div>
             <div className="-mr-2 flex sm:hidden">
               <button
                 type="button"
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                className="inline-flex items-center justify-center p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
                 aria-label="Main menu"
                 aria-expanded="false"
               >
@@ -37,22 +37,17 @@ export default function Home() {
       </nav>
       <div className="max-w-7xl mx-auto my-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
-          <h1 className="text-4xl leading-9 font-bold text-gray-900 sm:text-5xl sm:leading-10">
+          <h1 className="text-4xl leading-9 font-bold sm:text-5xl sm:leading-10">
             Discover the Bible in a whole new way
           </h1>
-          <p className="mt-3 max-w-2xl mx-auto text-xl leading-7 text-gray-500 sm:mt-4">
+          <p className="mt-3 max-w-2xl mx-auto text-xl leading-7 sm:mt-4">
             Search for specific Bible verses by describing a small story, parable or event in the Bible.
           </p>
-          <div className="mt-5 max-w-md mx-auto">
-            <Link href="/search" className="btn btn-primary">
-              Get Started
+          <div className="mt-10 max-w-md mx-auto">
+            <Link href="/search" className='text-white bg-gray-800 hover:bg-gray-700 px-10 py-3 rounded text-xl font-medium'>
+              Search
             </Link>
           </div>
-        </div>
-        <div className='w-fit mx-auto'>
-          <Link href="/search" className='bg-gray-800 px-10 py-4 rounded text-xl font-medium'>
-            Search
-          </Link>
         </div>
       </div>
       <footer className="mt-auto mx-10 border-t-2 border-gray-300 py-2">
