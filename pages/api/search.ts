@@ -2,12 +2,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
-  name: string
+  text: string
 }
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  console.log(req.query)
+  res.status(200).json({ text: 'Mark 12:11-13' })
 }
