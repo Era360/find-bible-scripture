@@ -1,9 +1,13 @@
+import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
+      <Head>
+        <title>Find Bible Scripture | Discover the Bible in a whole new way</title>
+      </Head>
       <nav className="mx-2 sm:mx-10 border-b-2 border-gray-300">
         <div className="container mx-auto">
           <div className="flex items-center justify-between h-16">
