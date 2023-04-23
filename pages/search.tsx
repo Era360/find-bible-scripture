@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
@@ -55,6 +55,25 @@ export default function Search() {
     const [userData, setuserData] = useState<UserDataType>()
     const auth_ = useAuth()
 
+    useEffect(() => {
+        if (!userData?.noOfTrials) {
+            getDoc(doc(db, `users/${auth_.user?.uid}`))
+                .then(snapshot => {
+                    if (snapshot.exists()) {
+                        setuserData({
+                            noOfTrials: snapshot.data().noOfTrials
+                        })
+                    }
+                })
+                .catch(error => {
+                    toast.error("Failed to fetch your credits.")
+                    console.error(`${(error as Error).message}`)
+                })
+        }
+
+    }, [auth_.user, userData])
+
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
@@ -69,11 +88,12 @@ export default function Search() {
                         query
                     })
                 });
-            const results = await response.json();
+            const results = await response.json() as { text: string };
             console.log(results)
             // setResults(results);
         } catch (error) {
             console.error(error);
+            toast.error("Something went wrong. Please try again later.")
         }
     };
 
