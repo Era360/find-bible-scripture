@@ -212,7 +212,7 @@ export default function Search() {
                         </h3>
                         <div className="h-[250px] flex flex-col items-center space-y-10 max-w-[670px] mt-2 mx-auto">
                             <div className="max-w-xl text-lg text-gray-300">
-                                Sign up to get free 3 stories to ask.
+                                Sign up to get <span className="font-bold text-blue-500">10 free</span> stories to ask.
                             </div>
                             {
                                 loading ? <Ellipsis /> :
