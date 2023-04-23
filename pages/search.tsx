@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { signInWithPopup } from "firebase/auth";
-import { useRouter } from "next/router";
+import { signInWithPopup, signOut } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";
@@ -10,8 +11,6 @@ import { getCurrentUser, useAuth } from "@/utils/use-auth";
 import { auth, db, google_provider } from "@/firebase";
 import Ellipsis from "@/components/ellipsis/ellipsis";
 import Avatar from "@/components/avatar/avatar";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import toast, { Toaster } from "react-hot-toast";
 
 type ResultDataType = {
     id: number,
@@ -54,19 +53,28 @@ export default function Search() {
     const [loading, setloading] = useState<boolean>(false)
     const [query, setQuery] = useState("");
     const [userData, setuserData] = useState<UserDataType>()
-    const navigate = useRouter()
     const auth_ = useAuth()
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        // try {
-        //     const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        //     const results = await response.json();
-        //     console.log(results)
-        //     // setResults(results);
-        // } catch (error) {
-        //     console.error(error);
-        // }
+        try {
+            const response = await fetch("/api/search",
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${await auth_.user?.getIdToken()}`
+                    },
+                    body: JSON.stringify({
+                        query
+                    })
+                });
+            const results = await response.json();
+            console.log(results)
+            // setResults(results);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const withGoogle = async () => {
