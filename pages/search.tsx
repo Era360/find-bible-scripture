@@ -74,7 +74,8 @@ export default function Search() {
             setloading(true);
             google_provider.setCustomParameters({ prompt: "select_account" });
             const user = await signInWithPopup(auth, google_provider);
-            toast.success(`Welcome Back, ${auth_.user?.displayName}`)
+            setloading(false)
+            toast.success(`Welcome, ${user.user.displayName}`)
             getDoc(doc(db, `users/${user.user.uid}`))
                 .then(snapshot => {
                     if (snapshot.exists()) {
@@ -85,6 +86,9 @@ export default function Search() {
                         setDoc(doc(db, `users/${user.user.uid}`), {
                             noOfTrials: 3
                         })
+                        setuserData({
+                            noOfTrials: 3
+                        })
                     }
                 })
 
@@ -92,7 +96,6 @@ export default function Search() {
             setloading(false);
             const error_message = (error as Error).message;
             console.log(error_message)
-            //   seterror(error_message);
         }
     };
 
@@ -111,7 +114,12 @@ export default function Search() {
                         </div>
                         <div className='hidden sm:block'>
                             {
-                                auth_.user ? <Avatar user_image={getCurrentUser()?.photoURL} />
+                                auth_.user ? <div className="flex items-center space-x-4">
+                                    <p className="font-medium">{auth_.user.displayName}</p>
+                                    <div className="cursor-pointer" onClick={() => signOut(auth)}>
+                                        <Avatar user_image={getCurrentUser()?.photoURL} />
+                                    </div>
+                                </div>
                                     :
                                     <Link href="/search" className="p-2 text-lg font-medium bg-gray-700 rounded-md hover:bg-gray-600">
                                         Sign Up
