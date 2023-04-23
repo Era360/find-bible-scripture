@@ -7,9 +7,11 @@ import Link from "next/link";
 
 // Local imports
 import { getCurrentUser, useAuth } from "@/utils/use-auth";
-import { auth, google_provider } from "@/firebase";
+import { auth, db, google_provider } from "@/firebase";
 import Ellipsis from "@/components/ellipsis/ellipsis";
 import Avatar from "@/components/avatar/avatar";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import toast, { Toaster } from "react-hot-toast";
 
 type ResultDataType = {
     id: number,
@@ -52,22 +54,31 @@ export default function Search() {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        try {
-            const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-            const results = await response.json();
-            console.log(results)
-            // setResults(results);
-        } catch (error) {
-            console.error(error);
-        }
+        // try {
+        //     const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        //     const results = await response.json();
+        //     console.log(results)
+        //     // setResults(results);
+        // } catch (error) {
+        //     console.error(error);
+        // }
     };
 
     const withGoogle = async () => {
         try {
             setloading(true);
             google_provider.setCustomParameters({ prompt: "select_account" });
-            await signInWithPopup(auth, google_provider);
-            //   navigate.push("/");
+            const user = await signInWithPopup(auth, google_provider);
+            toast.success(`Welcome Back, ${auth_.user?.displayName}`)
+            getDoc(doc(db, `users/${user.user.uid}`))
+                .then(snapshot => {
+                    if (!snapshot.exists()) {
+                        setDoc(doc(db, `users/${user.user.uid}`), {
+                            noOfTrials: 3
+                        })
+                    }
+                })
+
         } catch (error) {
             setloading(false);
             const error_message = (error as Error).message;
@@ -81,7 +92,7 @@ export default function Search() {
             <Head>
                 <title>Search | Discover the Bible in a whole new way</title>
             </Head>
-            <nav className="mx-2 sm:mx-10 border-b-2 border-gray-300">
+            <nav className="mx-2 border-b-2 border-gray-300 sm:mx-10">
                 <div className="container mx-auto">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex-shrink-0">
@@ -93,22 +104,22 @@ export default function Search() {
                             {
                                 auth_.user ? <Avatar user_image={getCurrentUser()?.photoURL} />
                                     :
-                                    <Link href="/search" className="p-2 bg-gray-700 hover:bg-gray-600 rounded-md text-lg font-medium">
+                                    <Link href="/search" className="p-2 text-lg font-medium bg-gray-700 rounded-md hover:bg-gray-600">
                                         Sign Up
                                     </Link>
                             }
                         </div>
-                        <div className="-mr-2 flex sm:hidden">
+                        <div className="flex -mr-2 sm:hidden">
                             <button
                                 type="button"
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                                className="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500"
                                 aria-label="Main menu"
                                 aria-expanded="false"
                             >
-                                <svg className="block h-6 w-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+                                <svg className="block w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
-                                <svg className="hidden h-6 w-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+                                <svg className="hidden w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
@@ -116,10 +127,11 @@ export default function Search() {
                     </div>
                 </div>
             </nav>
+            <Toaster />
             {
                 auth_.user ?
-                    <div className="px-4 sm:px-6 lg:px-8 py-20">
-                        <h1 className="text-3xl text-center font-bold mb-8">Describe a small story, parable or event in the Bible.</h1>
+                    <div className="px-4 py-20 sm:px-6 lg:px-8">
+                        <h1 className="mb-8 text-3xl font-bold text-center">Describe a small story, parable or event in the Bible.</h1>
                         <form onSubmit={handleSubmit} className="max-w-5xl mx-auto">
                             <textarea
                                 name="query"
@@ -127,16 +139,16 @@ export default function Search() {
                                 value={query}
                                 onChange={(event) => setQuery(event.target.value)}
                                 placeholder="Type here..."
-                                className="py-2 px-3 rounded-md w-full text-gray-800 border-gray-300 outline-none"
+                                className="w-full px-3 py-2 text-gray-800 border-gray-300 rounded-md outline-none"
                             />
-                            <button type="submit" className="block border w-fit mx-auto mt-10 px-9 py-2 rounded">
+                            <button type="submit" className="block py-2 mx-auto mt-10 border rounded w-fit px-9">
                                 Search
                             </button>
                         </form>
                         {/* {results.length > 0 && (
                     <div className="mt-2">
-                        <p className="text-lg font-medium mb-4">Search results:</p>
-                        <ul className="list-disc pl-8">
+                        <p className="mb-4 text-lg font-medium">Search results:</p>
+                        <ul className="pl-8 list-disc">
                             {results.map((result) => (
                                 <li key={result.id} className="mb-2">
                                     <Link href={`/verses/${result.id}`} className="text-indigo-600 hover:text-indigo-900">
@@ -149,18 +161,18 @@ export default function Search() {
                 )} */}
                     </div> :
                     <div className="py-20 space-y-10">
-                        <h3 className="mx-auto text-center max-w-4xl text-xl font-bold  text-gray-100 sm:text-3xl mb-5">
+                        <h3 className="max-w-4xl mx-auto mb-5 text-xl font-bold text-center text-gray-100 sm:text-3xl">
                             Have a story you remember and want to know what <span className="text-gray-600">Bible Scripture</span> it was?
                         </h3>
                         <div className="h-[250px] flex flex-col items-center space-y-10 max-w-[670px] mt-2 mx-auto">
-                            <div className="max-w-xl text-gray-300 text-lg">
+                            <div className="max-w-xl text-lg text-gray-300">
                                 Sign up to get free 3 stories to ask.
                             </div>
                             {
                                 loading ? <Ellipsis /> :
                                     <button
                                         onClick={() => withGoogle()}
-                                        className="bg-gray-200 text-black font-semibold py-3 px-6 rounded-2xl flex items-center space-x-2"
+                                        className="flex items-center px-6 py-3 space-x-2 font-semibold text-black bg-gray-200 rounded-2xl"
                                     >
                                         <Image
                                             src="/google.png"
