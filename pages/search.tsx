@@ -6,8 +6,10 @@ import Head from "next/head";
 import Link from "next/link";
 
 // Local imports
-import { useAuth } from "@/utils/use-auth";
+import { getCurrentUser, useAuth } from "@/utils/use-auth";
 import { auth, google_provider } from "@/firebase";
+import Ellipsis from "@/components/ellipsis/ellipsis";
+import Avatar from "@/components/avatar/avatar";
 
 type ResultDataType = {
     id: number,
@@ -43,7 +45,7 @@ const sampleData: Array<ResultDataType> = [
 
 export default function Search() {
     const [results, setResults] = useState<Array<ResultDataType>>(sampleData);
-    const [loading, setloading] = useState(false)
+    const [loading, setloading] = useState<boolean>(false)
     const [query, setQuery] = useState("");
     const navigate = useRouter()
     const auth_ = useAuth()
@@ -88,9 +90,13 @@ export default function Search() {
                             </Link>
                         </div>
                         <div className='hidden sm:block'>
-                            <Link href="/search" className="p-2 bg-gray-700 hover:bg-gray-600 rounded-md text-lg font-medium">
-                                Sign Up
-                            </Link>
+                            {
+                                auth_.user ? <Avatar user_image={getCurrentUser()?.photoURL} />
+                                    :
+                                    <Link href="/search" className="p-2 bg-gray-700 hover:bg-gray-600 rounded-md text-lg font-medium">
+                                        Sign Up
+                                    </Link>
+                            }
                         </div>
                         <div className="-mr-2 flex sm:hidden">
                             <button
@@ -150,18 +156,21 @@ export default function Search() {
                             <div className="max-w-xl text-gray-300 text-lg">
                                 Sign up to get free 3 stories to ask.
                             </div>
-                            <button
-                                onClick={() => withGoogle()}
-                                className="bg-gray-200 text-black font-semibold py-3 px-6 rounded-2xl flex items-center space-x-2"
-                            >
-                                <Image
-                                    src="/google.png"
-                                    width={20}
-                                    height={20}
-                                    alt="google's logo"
-                                />
-                                <span>Sign in with Google</span>
-                            </button>
+                            {
+                                loading ? <Ellipsis /> :
+                                    <button
+                                        onClick={() => withGoogle()}
+                                        className="bg-gray-200 text-black font-semibold py-3 px-6 rounded-2xl flex items-center space-x-2"
+                                    >
+                                        <Image
+                                            src="/google.png"
+                                            width={20}
+                                            height={20}
+                                            alt="google's logo"
+                                        />
+                                        <span>Sign in with Google</span>
+                                    </button>
+                            }
                         </div>
                     </div>
             }

@@ -11,13 +11,11 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: #fff;
-    --background-start-rgb: #1b1b1b;
-    --background-end-rgb: #141414;
+    --background-end-rgb: #111827;
   }
 }
 
 body {
   color: var(--foreground-rgb);
-  background: linear-gradient(to bottom, transparent, var(--background-end-rgb))
-    var(--background-start-rgb);
+  background: var(--background-end-rgb);
 }
