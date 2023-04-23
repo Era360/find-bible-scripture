@@ -18,6 +18,10 @@ type ResultDataType = {
     text: string
 }
 
+type UserDataType = {
+    noOfTrials: number
+}
+
 const sampleData: Array<ResultDataType> = [
     {
         id: 1,
@@ -49,6 +53,7 @@ export default function Search() {
     const [results, setResults] = useState<Array<ResultDataType>>(sampleData);
     const [loading, setloading] = useState<boolean>(false)
     const [query, setQuery] = useState("");
+    const [userData, setuserData] = useState<UserDataType>()
     const navigate = useRouter()
     const auth_ = useAuth()
 
@@ -72,7 +77,11 @@ export default function Search() {
             toast.success(`Welcome Back, ${auth_.user?.displayName}`)
             getDoc(doc(db, `users/${user.user.uid}`))
                 .then(snapshot => {
-                    if (!snapshot.exists()) {
+                    if (snapshot.exists()) {
+                        setuserData({
+                            noOfTrials: snapshot.data().noOfTrials
+                        })
+                    } else {
                         setDoc(doc(db, `users/${user.user.uid}`), {
                             noOfTrials: 3
                         })
@@ -141,6 +150,7 @@ export default function Search() {
                                 placeholder="Type here..."
                                 className="w-full px-3 py-2 text-gray-800 border-gray-300 rounded-md outline-none"
                             />
+                            <p className="text-gray-500 text-end">Quota remaining: {userData?.noOfTrials}</p>
                             <button type="submit" className="block py-2 mx-auto mt-10 border rounded w-fit px-9">
                                 Search
                             </button>
