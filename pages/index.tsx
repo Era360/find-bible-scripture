@@ -2,7 +2,15 @@ import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 
+// local imports
+import Avatar from '@/components/avatar/avatar';
+import { useAuth } from '@/utils/use-auth';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/firebase';
+
 export default function Home() {
+  const auth_ = useAuth()
+
   return (
     <div className="flex flex-col min-h-screen">
       <Head>
@@ -17,9 +25,18 @@ export default function Home() {
               </Link>
             </div>
             <div className='hidden sm:block'>
-              <Link href="/search" className="p-2 text-lg font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700">
-                Sign Up
-              </Link>
+              {
+                auth_.user ? <div className="flex items-center space-x-4">
+                  <p className="font-medium">{auth_.user.displayName}</p>
+                  <div className="cursor-pointer" onClick={() => signOut(auth)}>
+                    <Avatar user_image={auth_.user.photoURL} />
+                  </div>
+                </div>
+                  :
+                  <Link href="/search" className="p-2 text-lg font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700">
+                    Sign Up
+                  </Link>
+              }
             </div>
             <div className="flex -mr-2 sm:hidden">
               <button

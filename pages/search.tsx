@@ -7,7 +7,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 // Local imports
-import { getCurrentUser, useAuth } from "@/utils/use-auth";
+import { useAuth } from "@/utils/use-auth";
 import { auth, db, google_provider } from "@/firebase";
 import Ellipsis from "@/components/ellipsis/ellipsis";
 import Avatar from "@/components/avatar/avatar";
@@ -157,7 +157,7 @@ export default function Search() {
                                 auth_.user ? <div className="flex items-center space-x-4">
                                     <p className="font-medium">{auth_.user.displayName}</p>
                                     <div className="cursor-pointer" onClick={() => signOut(auth)}>
-                                        <Avatar user_image={getCurrentUser()?.photoURL} />
+                                        <Avatar user_image={auth_.user.photoURL} />
                                     </div>
                                 </div>
                                     :
