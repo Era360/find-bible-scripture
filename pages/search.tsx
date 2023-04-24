@@ -13,53 +13,53 @@ import Ellipsis from "@/components/ellipsis/ellipsis";
 import Avatar from "@/components/avatar/avatar";
 
 type ResultDataType = {
-    id: number,
     text: string
 }
 
 type UserDataType = {
-    credits: number
+    credits: number | null
 }
 
-const sampleData: Array<ResultDataType> = [
-    {
-        id: 1,
-        text: "this is cool"
-    },
-    {
-        id: 2,
-        text: "this is cool"
-    },
-    {
-        id: 3,
-        text: "this is cool"
-    },
-    {
-        id: 4,
-        text: "this is cool"
-    },
-    {
-        id: 5,
-        text: "this is cool"
-    },
-    {
-        id: 6,
-        text: "this is cool"
-    }
-]
+// const sampleData: Array<ResultDataType> = [
+//     {
+//         id: 1,
+//         text: "this is cool"
+//     },
+//     {
+//         id: 2,
+//         text: "this is cool"
+//     },
+//     {
+//         id: 3,
+//         text: "this is cool"
+//     },
+//     {
+//         id: 4,
+//         text: "this is cool"
+//     },
+//     {
+//         id: 5,
+//         text: "this is cool"
+//     },
+//     {
+//         id: 6,
+//         text: "this is cool"
+//     }
+// ]
 
 export default function Search() {
-    const [results, setResults] = useState<Array<ResultDataType>>(sampleData);
+    const [results, setResults] = useState<ResultDataType>({ text: "" });
     const [loading, setloading] = useState<boolean>(false)
     const [query, setQuery] = useState("");
-    const [userData, setuserData] = useState<UserDataType>()
+    const [userData, setuserData] = useState<UserDataType>({ credits: null })
     const auth_ = useAuth()
 
     useEffect(() => {
-        if (!userData?.credits && auth_.user) {
-            getDoc(doc(db, `users/${auth_.user?.uid}`))
+        if (userData?.credits === null && auth_.user) {
+            getDoc(doc(db, `users/${auth_.user!.uid}`))
                 .then(snapshot => {
                     if (snapshot.exists()) {
+                        if (snapshot.data().credits === 0) toast.error("You are out of credits.")
                         setuserData({
                             credits: snapshot.data().credits
                         })
@@ -76,6 +76,15 @@ export default function Search() {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+        if (!query) { toast("Nothing has been typed.", { icon: "🤷🏾" }); return }
+
+        if (userData.credits === 0) {
+            toast.error("You are out of credits. please pay.", {
+                duration: 6000
+            })
+            return
+        }
+        setloading(true)
         try {
             const response = await fetch("/api/search",
                 {
@@ -90,8 +99,11 @@ export default function Search() {
                 });
             const results = await response.json() as { text: string };
             console.log(results)
-            // setResults(results);
+            setResults(results);
+            setuserData({ credits: null })
+            setloading(false)
         } catch (error) {
+            setloading(false)
             console.error(error);
             toast.error("Something went wrong. Please try again later.")
         }
@@ -184,27 +196,30 @@ export default function Search() {
                                 value={query}
                                 onChange={(event) => setQuery(event.target.value)}
                                 placeholder="Type here..."
-                                className="w-full px-3 py-2 text-gray-800 border-gray-300 rounded-md outline-none"
+                                className={`w-full px-3 py-2 text-gray-800 border-gray-300 rounded-md outline-none ${userData.credits === 0 ? "ring-4 ring-red-700" : "ring-4 ring-green-700"}`}
                             />
                             <p className="text-gray-500 text-end">Quota remaining: {userData?.credits}</p>
-                            <button type="submit" className="block py-2 mx-auto mt-10 border rounded w-fit px-9">
+                            <button type="submit" disabled={loading} className={`${loading && "opacity-30"} block py-2 mx-auto mt-10 border rounded w-fit px-9`}>
                                 Search
                             </button>
                         </form>
-                        {/* {results.length > 0 && (
-                    <div className="mt-2">
-                        <p className="mb-4 text-lg font-medium">Search results:</p>
-                        <ul className="pl-8 list-disc">
-                            {results.map((result) => (
-                                <li key={result.id} className="mb-2">
-                                    <Link href={`/verses/${result.id}`} className="text-indigo-600 hover:text-indigo-900">
-                                        {result.text}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )} */}
+                        <div className="mt-10 text-center">
+                            {
+                                loading ?
+                                    <div>
+                                        <Ellipsis />
+                                    </div> :
+                                    <>
+                                        {results.text && (
+                                            <div className="px-10 py-2 mx-auto border-2 border-gray-600 rounded-md w-fit">
+                                                <p>{query}</p>
+                                                <p className="text-4xl font-semibold">{results.text}</p>
+                                            </div>
+                                        )}
+                                    </>
+                            }
+                            <button className={`${results.text && "mt-5"} hover:border rounded px-5 py-2`}>View History</button>
+                        </div>
                     </div> :
                     <div className="py-20 space-y-10">
                         <h3 className="max-w-4xl mx-auto mb-5 text-xl font-bold text-center text-gray-100 sm:text-3xl">
