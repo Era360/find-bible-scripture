@@ -18,7 +18,7 @@ type ResultDataType = {
 }
 
 type UserDataType = {
-    noOfTrials: number
+    credits: number
 }
 
 const sampleData: Array<ResultDataType> = [
@@ -56,12 +56,12 @@ export default function Search() {
     const auth_ = useAuth()
 
     useEffect(() => {
-        if (!userData?.noOfTrials) {
+        if (!userData?.credits && auth_.user) {
             getDoc(doc(db, `users/${auth_.user?.uid}`))
                 .then(snapshot => {
                     if (snapshot.exists()) {
                         setuserData({
-                            noOfTrials: snapshot.data().noOfTrials
+                            credits: snapshot.data().credits
                         })
                     }
                 })
@@ -108,14 +108,14 @@ export default function Search() {
                 .then(snapshot => {
                     if (snapshot.exists()) {
                         setuserData({
-                            noOfTrials: snapshot.data().noOfTrials
+                            credits: snapshot.data().credits
                         })
                     } else {
                         setDoc(doc(db, `users/${user.user.uid}`), {
-                            noOfTrials: 3
+                            credits: 3
                         })
                         setuserData({
-                            noOfTrials: 3
+                            credits: 3
                         })
                     }
                 })
@@ -186,7 +186,7 @@ export default function Search() {
                                 placeholder="Type here..."
                                 className="w-full px-3 py-2 text-gray-800 border-gray-300 rounded-md outline-none"
                             />
-                            <p className="text-gray-500 text-end">Quota remaining: {userData?.noOfTrials}</p>
+                            <p className="text-gray-500 text-end">Quota remaining: {userData?.credits}</p>
                             <button type="submit" className="block py-2 mx-auto mt-10 border rounded w-fit px-9">
                                 Search
                             </button>
