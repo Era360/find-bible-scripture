@@ -4,9 +4,11 @@ import firebaseAdmin from 'firebase-admin'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 let serviceAccount = require('../../service-keys.json')
 
-firebaseAdmin.initializeApp({
-  credential: firebaseAdmin.credential.cert(serviceAccount)
-})
+if(firebaseAdmin.apps.length === 0){
+  firebaseAdmin.initializeApp({
+    credential: firebaseAdmin.credential.cert(serviceAccount)
+  })
+}
 
 type Data = {
   text: string
