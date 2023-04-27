@@ -2,16 +2,30 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import firebaseAdmin from 'firebase-admin'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
+import { Configuration, OpenAIApi } from 'openai'
 let serviceAccount = require('../../service-keys.json')
 
+
+// Firebase Initiatization
 if(firebaseAdmin.apps.length === 0){
   firebaseAdmin.initializeApp({
     credential: firebaseAdmin.credential.cert(serviceAccount)
   })
 }
 
-type Data = {
-  text: string
+// OpenAi Initiatization
+const configuration = new Configuration({
+  apiKey: process.env.MACHA_OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+
+
+export type Data = {
+  text?: string,
+  story?: string,
+  scripture?: string,
+  scriptureText?: string
 }
 
 interface ExtendedNextApiRequest extends NextApiRequest {
@@ -26,7 +40,10 @@ export default async function handler(
   req: ExtendedNextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  /////////////////////////////////////////////////////
+  // Firebase
   let userId: string = ""
+  let theScripture: string = ""
   try {
     // Get the user's ID token from the Authorization header
     const idToken = req.headers.authorization?.split('Bearer ')[1];
@@ -57,6 +74,31 @@ export default async function handler(
 
   // Deduct 1 credit from the user's account
   await userRef.update({ credits: FieldValue.increment(-1) });
+//////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////
+// OPENAI
+  try {
+    console.log("Fetching from openai....")
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: `Find a scripture in the Bible that matches a description, 
+      if its not in the bible just say "not found" dont say anything else, the response should be in format of book : chapter : starting verse - ending verse, 
+      Dont say what the scripture says. Here is the description: ${req.body.query}`,
+      max_tokens: 20
+    });
+    theScripture = completion.data.choices[0].text as string
+    console.log(completion.data.choices[0].text);
+  } catch (error: any) {
+    console.log("Failed Fetching from openai....")
+    if (error.response) {
+      console.log(error.response.status);
+      console.log(error.response.data);
+    } else {
+      console.log(error.message);
+    }
+  }
+  //////////////////////////////////////////////////
 
   console.log("The Query: ", req.body.query)
   res.status(200).send({ text: 'Mark 12:11-13' })
