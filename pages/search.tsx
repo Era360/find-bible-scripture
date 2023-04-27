@@ -11,10 +11,7 @@ import { useAuth } from "@/utils/use-auth";
 import { auth, db, google_provider } from "@/firebase";
 import Ellipsis from "@/components/ellipsis/ellipsis";
 import Avatar from "@/components/avatar/avatar";
-
-type ResultDataType = {
-    text: string
-}
+import { Data } from "./api/search";
 
 type UserDataType = {
     credits: number | null
@@ -48,7 +45,7 @@ type UserDataType = {
 // ]
 
 export default function Search() {
-    const [results, setResults] = useState<ResultDataType>({ text: "" });
+    const [results, setResults] = useState<Data>({ text: "" });
     const [loading, setloading] = useState<boolean>(false)
     const [query, setQuery] = useState("");
     const [userData, setuserData] = useState<UserDataType>({ credits: null })
@@ -97,7 +94,7 @@ export default function Search() {
                         query
                     })
                 });
-            const results = await response.json() as { text: string };
+            const results = await response.json() as Data;
             console.log(results)
             setResults(results);
             setuserData({ credits: null })
@@ -210,15 +207,16 @@ export default function Search() {
                                         <Ellipsis />
                                     </div> :
                                     <>
-                                        {results.text && (
+                                        {results.scripture && (
                                             <div className="px-10 py-2 mx-auto border-2 border-gray-600 rounded-md w-fit">
-                                                <p>{query}</p>
-                                                <p className="text-4xl font-semibold">{results.text}</p>
+                                                <p><span className="font-bold">Story: </span>{results.story}</p>
+                                                <p className="text-lg font-bold border-b-4">{results.scripture}</p>
+                                                <p className="text-xl">{results.scriptureText}</p>
                                             </div>
                                         )}
                                     </>
                             }
-                            <button className={`${results.text && "mt-5"} hover:border rounded px-5 py-2`}>View History</button>
+                            <button className={`${results.scripture && "mt-5"} hover:border rounded px-5 py-2`}>View History</button>
                         </div>
                     </div> :
                     <div className="py-20 space-y-10">

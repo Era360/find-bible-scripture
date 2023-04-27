@@ -100,6 +100,32 @@ export default async function handler(
   }
   //////////////////////////////////////////////////
 
-  console.log("The Query: ", req.body.query)
-  res.status(200).send({ text: 'Mark 12:11-13' })
+  try {
+    const response = await fetch(`https://bible-api.com/${theScripture}`, {
+        method: 'GET'
+    })
+
+    const { text } = await response.json()
+    await db.collection(`users/${userId}/history`).add({
+      story: req.body.query,
+      scripture: theScripture,
+      scriptureText: text
+    });
+
+    return res.status(200).json({
+      story: req.body.query,
+      scripture: theScripture,
+      scriptureText: text
+    });
+
+} catch (error) {
+    console.error((error as Error).message)
+    await db.collection(`users/${userId}/history`).add({
+      story: req.body.query,
+      scripture: theScripture
+    });
+
+    return res.status(400).json({story: req.body.query, scripture: theScripture });
+}
+  
 }
