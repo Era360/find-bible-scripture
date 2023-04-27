@@ -171,12 +171,12 @@ export default function Search() {
                                             <div className="px-10 py-2 mx-auto border-2 border-gray-600 rounded-md w-fit">
                                                 <p><span className="font-bold">Story: </span>{results.story}</p>
                                                 <p className="text-lg font-bold border-b-4">{results.scripture}</p>
-                                                <p className="text-xl">{results.scriptureText}</p>
+                                                <p className="my-5 text-xl">{results.scriptureText}</p>
                                             </div>
                                         )}
                                     </>
                             }
-                            <Link href="/history" className={`${results.scripture && "mt-5"} hover:border rounded px-5 py-2`}>View History</Link>
+                            <Link href="/history" className={`${results.scriptureText && "mt-5"} hover:border rounded px-5 py-2`}>View History</Link>
                         </div>
                     </div> :
                     <div className="py-20 space-y-10">

@@ -24,6 +24,7 @@ const openai = new OpenAIApi(configuration);
 export type Data = {
   text?: string,
   story?: string,
+  time?: Date,
   scripture?: string,
   scriptureText?: string
 }
@@ -108,12 +109,14 @@ export default async function handler(
     const { text } = await response.json()
     await db.collection(`users/${userId}/history`).add({
       story: req.body.query,
+      time: FieldValue.serverTimestamp(),
       scripture: theScripture,
       scriptureText: text
     });
 
     return res.status(200).json({
       story: req.body.query,
+      time: new Date(),
       scripture: theScripture,
       scriptureText: text
     });
@@ -122,10 +125,15 @@ export default async function handler(
     console.error((error as Error).message)
     await db.collection(`users/${userId}/history`).add({
       story: req.body.query,
+      time: FieldValue.serverTimestamp(),
       scripture: theScripture
     });
 
-    return res.status(400).json({story: req.body.query, scripture: theScripture });
+    return res.status(400).json({
+      story: req.body.query,
+      time: new Date(),
+      scripture: theScripture
+    });
 }
   
 }
