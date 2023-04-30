@@ -6,7 +6,6 @@ import { useAuth } from '@/utils/use-auth'
 import { collection, getDocs, limit, query } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { Data } from './api/search'
-import { data } from 'autoprefixer'
 import Ellipsis from '@/components/ellipsis/ellipsis'
 
 interface HistoryData extends Data {
