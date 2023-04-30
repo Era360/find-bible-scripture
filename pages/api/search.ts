@@ -31,7 +31,8 @@ export type Data = {
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: {
-    query: string
+    query: string,
+    storyId: string | boolean
   };
 }
 
@@ -102,30 +103,49 @@ export default async function handler(
   //////////////////////////////////////////////////
 
   try {
-    const response = await fetch(`https://bible-api.com/${theScripture}`, {
-        method: 'GET'
-    })
+    if(theScripture !== "not found"){
+      const response = await fetch(`https://bible-api.com/${theScripture}`, {
+          method: 'GET'
+      })
+  
+      let { text }: { text: string } = await response.json()
+      
+      // Taking only 100 bible words
+      if(text.split(" ").length > 100){
+        text = text.split(" ").slice(0, 100).join(" ") + "...";
+      }
+      
+      if(req.body.storyId){
+        await db.collection(`users/${userId}/history`).doc(req.body.storyId as string).update({
+          story: req.body.query,
+          time: FieldValue.serverTimestamp(),
+          scripture: theScripture,
+          scriptureText: text
+        });  
+      } else{
+        await db.collection(`users/${userId}/history`).add({
+          story: req.body.query,
+          time: FieldValue.serverTimestamp(),
+          scripture: theScripture,
+          scriptureText: text
+        });
+      }
 
-    let { text }: { text: string } = await response.json()
-    
-    // Taking only 100 bible words
-    if(text.split(" ").length > 100){
-      text = text.split(" ").slice(0, 100).join(" ") + "...";
+      return res.status(200).json({
+        story: req.body.query,
+        time: new Date(),
+        scripture: theScripture,
+        scriptureText: text
+      });
+    } else {
+      return res.status(200).json({
+        story: req.body.query,
+        time: new Date(),
+        scripture: theScripture
+        // scriptureText: text
+      });
     }
 
-    await db.collection(`users/${userId}/history`).add({
-      story: req.body.query,
-      time: FieldValue.serverTimestamp(),
-      scripture: theScripture,
-      scriptureText: text
-    });
-
-    return res.status(200).json({
-      story: req.body.query,
-      time: new Date(),
-      scripture: theScripture,
-      scriptureText: text
-    });
 
 } catch (error) {
     console.error((error as Error).message)

@@ -12,37 +12,12 @@ import { auth, db, google_provider } from "@/firebase";
 import Ellipsis from "@/components/ellipsis/ellipsis";
 import { Data } from "./api/search";
 import Header from "@/components/header";
+import { useRouter } from "next/router";
 
 type UserDataType = {
     credits: number | null
 }
 
-// const sampleData: Array<ResultDataType> = [
-//     {
-//         id: 1,
-//         text: "this is cool"
-//     },
-//     {
-//         id: 2,
-//         text: "this is cool"
-//     },
-//     {
-//         id: 3,
-//         text: "this is cool"
-//     },
-//     {
-//         id: 4,
-//         text: "this is cool"
-//     },
-//     {
-//         id: 5,
-//         text: "this is cool"
-//     },
-//     {
-//         id: 6,
-//         text: "this is cool"
-//     }
-// ]
 
 export default function Search() {
     const [results, setResults] = useState<Data>({ text: "" });
@@ -50,6 +25,7 @@ export default function Search() {
     const [query, setQuery] = useState("");
     const [userData, setuserData] = useState<UserDataType>({ credits: null })
     const auth_ = useAuth()
+    const navigate = useRouter()
 
     useEffect(() => {
         if (userData?.credits === null && auth_.user) {
@@ -70,6 +46,21 @@ export default function Search() {
 
     }, [auth_.user, userData])
 
+    useEffect(() => {
+        const { story } = navigate.query
+        if (query === "" && story) {
+            getDoc(doc(db, `users/${auth_.user?.uid}/history/${story}`))
+                .then(docSnapshot => {
+                    console.log(docSnapshot.data())
+                    setQuery(docSnapshot.data()?.story)
+                })
+                .catch(error => {
+                    console.error((error as Error).message)
+                })
+        }
+
+
+    }, [query, auth_.user?.uid, navigate.query])
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -82,6 +73,10 @@ export default function Search() {
             return
         }
         setloading(true)
+        let bodyData = {
+            query,
+            storyId: navigate.query["story"] || false,
+        }
         try {
             const response = await fetch("/api/search",
                 {
@@ -90,15 +85,14 @@ export default function Search() {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${await auth_.user?.getIdToken()}`
                     },
-                    body: JSON.stringify({
-                        query
-                    })
+                    body: JSON.stringify(bodyData)
                 });
             const results = await response.json() as Data;
-            console.log(results)
             setResults(results);
+            setQuery("")
             setuserData({ credits: null })
             setloading(false)
+            navigate.replace(navigate.asPath.split("?")[0])
         } catch (error) {
             setloading(false)
             console.error(error);
@@ -170,13 +164,13 @@ export default function Search() {
                                         {results.scripture && (
                                             <div className="px-10 py-2 mx-auto border-2 border-gray-600 rounded-md w-fit">
                                                 <p><span className="font-bold">Story: </span>{results.story}</p>
-                                                <p className="text-lg font-bold border-b-4">{results.scripture}</p>
+                                                <p className={`text-lg font-bold ${results.scripture.trim() !== "not found" ? "border-b-4" : "border-t-2"}`}>{results.scripture}</p>
                                                 <p className="my-5 text-xl">{results.scriptureText}</p>
                                             </div>
                                         )}
                                     </>
                             }
-                            <Link href="/history" className={`${results.scriptureText && "mt-5"} hover:border rounded px-5 py-2`}>View History</Link>
+                            <Link href="/history" className={`${results.scriptureText && "mt-5"} block w-fit mx-auto hover:border rounded px-5 py-2`}>View History</Link>
                         </div>
                     </div> :
                     <div className="py-20 space-y-10">
