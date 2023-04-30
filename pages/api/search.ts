@@ -106,7 +106,13 @@ export default async function handler(
         method: 'GET'
     })
 
-    const { text } = await response.json()
+    let { text }: { text: string } = await response.json()
+    
+    // Taking only 100 bible words
+    if(text.split(" ").length > 100){
+      text = text.split(" ").slice(0, 100).join(" ") + "...";
+    }
+
     await db.collection(`users/${userId}/history`).add({
       story: req.body.query,
       time: FieldValue.serverTimestamp(),
