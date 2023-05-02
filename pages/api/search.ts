@@ -138,6 +138,20 @@ export default async function handler(
         scriptureText: text
       });
     } else {
+      if(req.body.storyId){
+        await db.collection(`users/${userId}/history`).doc(req.body.storyId as string).update({
+          story: req.body.query,
+          time: FieldValue.serverTimestamp(),
+          scripture: theScripture
+        });  
+      } else{
+        await db.collection(`users/${userId}/history`).add({
+          story: req.body.query,
+          time: FieldValue.serverTimestamp(),
+          scripture: theScripture
+        });
+      }
+
       return res.status(200).json({
         story: req.body.query,
         time: new Date(),
@@ -145,7 +159,6 @@ export default async function handler(
         // scriptureText: text
       });
     }
-
 
 } catch (error) {
     console.error((error as Error).message)
