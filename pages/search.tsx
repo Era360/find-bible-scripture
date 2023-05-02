@@ -5,14 +5,14 @@ import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 // Local imports
+import Header from "@/components/header";
 import { useAuth } from "@/utils/use-auth";
 import { auth, db, google_provider } from "@/firebase";
 import Ellipsis from "@/components/ellipsis/ellipsis";
 import { Data } from "./api/search";
-import Header from "@/components/header";
-import { useRouter } from "next/router";
 
 type UserDataType = {
     credits: number | null

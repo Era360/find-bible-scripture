@@ -32,7 +32,6 @@ function History() {
                 } else {
                     let theData: HistoryData[] = []
                     querySnapshot.forEach((doc) => {
-                        console.log(doc.id, " => ", doc.data());
                         theData.push({
                             id: doc.id,
                             ...doc.data()
@@ -55,7 +54,7 @@ function History() {
             <section>
                 <h2 className='my-5 text-4xl font-semibold text-center'>History</h2>
                 {
-                    historyData.length === 0 ? <div>
+                    historyData.length === 0 ? <div className='mt-32 text-center'>
                         <Ellipsis />
                     </div>
                         :
