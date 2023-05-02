@@ -51,7 +51,6 @@ export default function Search() {
         if (query === "" && story) {
             getDoc(doc(db, `users/${auth_.user?.uid}/history/${story}`))
                 .then(docSnapshot => {
-                    console.log(docSnapshot.data())
                     setQuery(docSnapshot.data()?.story)
                 })
                 .catch(error => {
@@ -87,12 +86,21 @@ export default function Search() {
                     },
                     body: JSON.stringify(bodyData)
                 });
-            const results = await response.json() as Data;
-            setResults(results);
-            setQuery("")
-            setuserData({ credits: null })
-            setloading(false)
-            navigate.replace(navigate.asPath.split("?")[0])
+            if (response.status === 200) {
+                const results = await response.json() as Data;
+                setResults(results);
+                setQuery("")
+                setuserData({ credits: null })
+                setloading(false)
+                navigate.replace(navigate.asPath.split("?")[0])
+            } else if (response.status === 400) {
+                setloading(false)
+                toast.error("Failed to get the bible verse.")
+            }
+            else {
+                setloading(false)
+                toast.error("Something went wrong. Please try again later.")
+            }
         } catch (error) {
             setloading(false)
             console.error(error);
