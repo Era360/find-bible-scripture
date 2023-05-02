@@ -74,8 +74,6 @@ export default async function handler(
     console.log(`user ${userId} has ${credits} credits.`)
   }
 
-  // Deduct 1 credit from the user's account
-  await userRef.update({ credits: FieldValue.increment(-1) });
 //////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////
@@ -99,8 +97,14 @@ export default async function handler(
     } else {
       console.log(error.message);
     }
+    return res.status(500).send({
+      text: "3rd party error"
+    });
   }
   //////////////////////////////////////////////////
+
+  // Deduct 1 credit from the user's account when OPENAI request is a sucess
+  await userRef.update({ credits: FieldValue.increment(-1) });
 
   try {
     if(theScripture !== "not found"){
