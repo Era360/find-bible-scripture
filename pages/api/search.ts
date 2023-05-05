@@ -23,6 +23,9 @@ const parseNotFound = (text: string) => {
   return text.trim().toLowerCase().endsWith(".") ? text.trim().toLowerCase().split(".")[0] : text.trim().toLowerCase()
 }
 
+const parseScripture = (text: string) => {
+  return `${text.trim().split(" ")[0]} ${text.trim().split(" ")[1]}`
+}
 
 export type Data = {
   text?: string,
@@ -91,7 +94,8 @@ export default async function handler(
       max_tokens: 20
     });
     theScripture = completion.data.choices[0].text as string
-    console.log(completion.data.choices[0].text);
+    console.log(completion.data.choices[0].text)
+    console.log(parseScripture(completion.data.choices[0].text as string));
   } catch (error: any) {
     console.log("Failed Fetching from openai....")
     if (error.response) {
@@ -131,7 +135,7 @@ export default async function handler(
         scripture: "not found"
       });
     } else {
-      const response = await fetch(`https://bible-api.com/${theScripture}`, {
+      const response = await fetch(`https://bible-api.com/${parseScripture(theScripture)}`, {
           method: 'GET'
       })
   
@@ -146,14 +150,14 @@ export default async function handler(
         await db.collection(`users/${userId}/history`).doc(req.body.storyId as string).update({
           story: req.body.query,
           time: FieldValue.serverTimestamp(),
-          scripture: theScripture,
+          scripture: parseScripture(theScripture),
           scriptureText: text
         });  
       } else{
         await db.collection(`users/${userId}/history`).add({
           story: req.body.query,
           time: FieldValue.serverTimestamp(),
-          scripture: theScripture,
+          scripture: parseScripture(theScripture),
           scriptureText: text
         });
       }
@@ -161,7 +165,7 @@ export default async function handler(
       return res.status(200).json({
         story: req.body.query,
         time: new Date(),
-        scripture: theScripture,
+        scripture: parseScripture(theScripture),
         scriptureText: text
       });
       
@@ -173,20 +177,20 @@ export default async function handler(
       await db.collection(`users/${userId}/history`).doc(req.body.storyId as string).update({
         story: req.body.query,
         time: FieldValue.serverTimestamp(),
-        scripture: theScripture
+        scripture: parseScripture(theScripture)
       });  
     } else{
       await db.collection(`users/${userId}/history`).add({
         story: req.body.query,
         time: FieldValue.serverTimestamp(),
-        scripture: theScripture
+        scripture: parseScripture(theScripture)
       });
     }
 
     return res.status(400).json({
       story: req.body.query,
       time: new Date(),
-      scripture: theScripture
+      scripture: parseScripture(theScripture)
     });
 }
   
