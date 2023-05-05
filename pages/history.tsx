@@ -56,16 +56,16 @@ function History() {
             </Head>
             <Header />
             <section>
-                <h2 className='my-5 text-4xl font-semibold text-center'>History</h2>
+                <h2 className='my-5 text-2xl font-semibold text-center md:text-4xl'>History</h2>
                 {
                     historyData.length === 0 ? <div className='mt-32 text-center'>
                         <Ellipsis />
                     </div>
                         :
-                        <div className='w-3/4 mx-auto mb-10 space-y-10'>
+                        <div className='w-5/6 mx-auto mb-10 space-y-10 md:w-3/4'>
                             {
                                 historyData.map((hist, index) => (
-                                    <div key={index} className="px-10 py-2 mx-auto border border-gray-600 rounded-md w-fit hover:shadow-md hover:shadow-black">
+                                    <div key={index} className="px-6 py-2 mx-auto border border-gray-600 rounded-md md:px-10 w-fit hover:shadow-md hover:shadow-black">
                                         <p><span className="font-bold">Story: </span>{hist.story}</p>
                                         {
                                             hist.scripture?.trim() === "not found" &&
@@ -75,8 +75,8 @@ function History() {
                                                 }} className='px-3 py-1 border rounded'>Edit Story</button>
                                             </div>
                                         }
-                                        <p className={`text-xl font-bold text-center ${hist.scripture?.trim() !== "not found" ? "border-b-4" : "border-t-2"}`}>{hist.scripture}</p>
-                                        <p className="my-3 text-xl text-center">{hist.scriptureText}</p>
+                                        <p className={`text-lg md:text-xl font-bold text-center ${hist.scripture?.trim() !== "not found" ? "border-b-2 md:border-b-4" : "border-t-2"}`}>{hist.scripture}</p>
+                                        <p className="my-3 text-base text-justify md:text-center md:text-xl">{hist.scriptureText}</p>
                                     </div>
                                 ))
                             }

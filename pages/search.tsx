@@ -147,7 +147,7 @@ export default function Search() {
             {
                 auth_.user ?
                     <div className="px-4 py-20 sm:px-6 lg:px-8">
-                        <h1 className="mb-8 text-3xl font-bold text-center">Describe a small story, parable or event in the Bible.</h1>
+                        <h1 className="mb-8 text-xl font-bold text-center md:text-3xl">Describe a small story, parable or event in the Bible.</h1>
                         <form onSubmit={handleSubmit} className="max-w-5xl mx-auto">
                             <textarea
                                 name="query"
@@ -155,10 +155,10 @@ export default function Search() {
                                 value={query}
                                 onChange={(event) => setQuery(event.target.value)}
                                 placeholder="Type here..."
-                                className={`w-full p-2.5 text-gray-800 border-gray-300 rounded-md outline-none ${userData.credits === 0 ? "ring-4 ring-red-700" : "ring-4 ring-green-700"}`}
+                                className={`w-full p-2.5 text-sm md:text-base text-gray-800 border-gray-300 rounded-md outline-none ${userData.credits === 0 ? "ring-4 ring-red-700" : "ring-4 ring-green-700"}`}
                             />
-                            <p className="text-gray-500 text-end">Quota remaining: {userData?.credits}</p>
-                            <button type="submit" disabled={loading} className={`${loading && "opacity-30"} block py-2 mx-auto mt-10 border rounded w-fit px-9`}>
+                            <p className="text-sm text-gray-500 md:text-base text-end">Quota remaining: {userData?.credits}</p>
+                            <button type="submit" disabled={loading} className={`${loading && "opacity-30"} block px-7 py-2 md:px-9 mx-auto mt-10 border rounded w-fit`}>
                                 Search
                             </button>
                         </form>
@@ -181,11 +181,11 @@ export default function Search() {
                             <Link href="/history" className={`${results.scriptureText && "mt-5"} block w-fit mx-auto hover:border rounded px-5 py-2`}>View History</Link>
                         </div>
                     </div> :
-                    <div className="py-20 space-y-10">
+                    <div className="py-20 space-y-5 md:space-y-10">
                         <h3 className="max-w-4xl mx-auto mb-5 text-xl font-bold text-center text-gray-100 sm:text-3xl">
                             Have a story you remember and want to know what <span className="text-gray-600">Bible Scripture</span> it was?
                         </h3>
-                        <div className="h-[250px] flex flex-col items-center space-y-10 max-w-[670px] mt-2 mx-auto">
+                        <div className="h-[250px] flex flex-col items-center space-y-4 md:space-y-10 max-w-[670px] mt-2 mx-auto">
                             <div className="max-w-xl text-lg text-gray-300">
                                 Sign up to get <span className="font-bold text-blue-500">10 free</span> stories to ask.
                             </div>
@@ -193,7 +193,7 @@ export default function Search() {
                                 loading ? <Ellipsis /> :
                                     <button
                                         onClick={() => withGoogle()}
-                                        className="flex items-center px-6 py-3 space-x-2 font-semibold text-black bg-gray-200 rounded-2xl"
+                                        className="flex items-center px-5 py-2 space-x-2 font-semibold text-black bg-gray-200 md:px-6 md:py-3 rounded-2xl"
                                     >
                                         <Image
                                             src="/google.png"

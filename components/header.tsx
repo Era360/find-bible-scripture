@@ -7,14 +7,16 @@ import { useAuth } from '@/utils/use-auth'
 import { auth } from '@/firebase'
 import Avatar from './avatar/avatar'
 import Popover from './popover'
+import { useRouter } from 'next/router'
 
 function Header() {
     const auth_ = useAuth()
+    const navigate = useRouter()
 
     return (
         <nav className="mx-2 border-b-2 border-gray-300 sm:mx-10">
             <div className="container mx-auto">
-                <div className="flex items-center justify-between h-16">
+                <div className="flex items-center justify-between py-4">
                     <div className="flex-shrink-0">
                         <Link href="/" className="text-xl font-bold">
                             find bible scripture
@@ -26,7 +28,7 @@ function Header() {
                                 <p className="font-medium">{auth_.user.displayName}</p>
                                 <Popover content={
                                     <div className="px-4 py-2 ">
-                                        <div className='flex items-center space-x-2 text-gray-700 cursor-pointer hover:bg-gray-100 hover:text-gray-900' onClick={() => signOut(auth)}>
+                                        <div className='flex items-center space-x-2 text-gray-700 cursor-pointer hover:bg-gray-100 hover:text-gray-900' onClick={() => { signOut(auth); navigate.push("/search") }}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-box-arrow-right" viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
                                                 <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
@@ -44,14 +46,18 @@ function Header() {
                                 </Link>
                         }
                     </div>
-                    <div className="flex -mr-2 sm:hidden">
+                    <div className="block sm:hidden">
                         <Popover content={
                             <div className="px-4 py-2">
-                                <div className='flex items-center justify-center pb-1 space-x-2 border-b border-gray-400'>
-                                    <Avatar user_image={auth_.user?.photoURL} />
-                                    <p className="font-medium text-gray-700">{auth_.user?.displayName}</p>
-                                </div>
-                                <div className='flex items-center justify-center pt-1 space-x-2 text-red-700 border cursor-pointer' onClick={() => signOut(auth)}>
+                                {
+                                    auth_.user &&
+                                    <div className='flex items-center justify-center pb-1 space-x-2 border-b border-gray-400'>
+                                        <Avatar user_image={auth_.user?.photoURL} />
+                                        <p className="font-medium text-gray-700">{auth_.user?.displayName}</p>
+                                    </div>
+
+                                }
+                                <div className='flex items-center justify-center pt-1 space-x-2 text-red-700 border cursor-pointer' onClick={() => { signOut(auth); navigate.push("/search") }}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-box-arrow-right" viewBox="0 0 16 16">
                                         <path fillRule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
                                         <path fillRule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
