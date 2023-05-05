@@ -19,6 +19,9 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+const parseNotFound = (text: string) => {
+  return text.trim().toLowerCase().endsWith(".") ? text.trim().toLowerCase().split(".")[0] : text.trim().toLowerCase()
+}
 
 
 export type Data = {
@@ -107,7 +110,27 @@ export default async function handler(
   await userRef.update({ credits: FieldValue.increment(-1) });
 
   try {
-    if(theScripture !== "not found"){
+    if(parseNotFound(theScripture).includes("not found")){
+      if(req.body.storyId){
+        await db.collection(`users/${userId}/history`).doc(req.body.storyId as string).update({
+          story: req.body.query,
+          time: FieldValue.serverTimestamp(),
+          scripture: "not found"
+        });  
+      } else{
+        await db.collection(`users/${userId}/history`).add({
+          story: req.body.query,
+          time: FieldValue.serverTimestamp(),
+          scripture: "not found"
+        });
+      }
+
+      return res.status(200).json({
+        story: req.body.query,
+        time: new Date(),
+        scripture: "not found"
+      });
+    } else {
       const response = await fetch(`https://bible-api.com/${theScripture}`, {
           method: 'GET'
       })
@@ -141,36 +164,24 @@ export default async function handler(
         scripture: theScripture,
         scriptureText: text
       });
-    } else {
-      if(req.body.storyId){
-        await db.collection(`users/${userId}/history`).doc(req.body.storyId as string).update({
-          story: req.body.query,
-          time: FieldValue.serverTimestamp(),
-          scripture: theScripture
-        });  
-      } else{
-        await db.collection(`users/${userId}/history`).add({
-          story: req.body.query,
-          time: FieldValue.serverTimestamp(),
-          scripture: theScripture
-        });
-      }
-
-      return res.status(200).json({
-        story: req.body.query,
-        time: new Date(),
-        scripture: theScripture
-        // scriptureText: text
-      });
+      
     }
 
 } catch (error) {
     console.error((error as Error).message)
-    await db.collection(`users/${userId}/history`).add({
-      story: req.body.query,
-      time: FieldValue.serverTimestamp(),
-      scripture: theScripture
-    });
+    if(req.body.storyId){
+      await db.collection(`users/${userId}/history`).doc(req.body.storyId as string).update({
+        story: req.body.query,
+        time: FieldValue.serverTimestamp(),
+        scripture: theScripture
+      });  
+    } else{
+      await db.collection(`users/${userId}/history`).add({
+        story: req.body.query,
+        time: FieldValue.serverTimestamp(),
+        scripture: theScripture
+      });
+    }
 
     return res.status(400).json({
       story: req.body.query,
