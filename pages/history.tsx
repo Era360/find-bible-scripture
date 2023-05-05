@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { collection, getDocs, limit, query } from 'firebase/firestore'
+import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 
 // Local imports
@@ -24,7 +24,7 @@ function History() {
         const fetchHistory = async () => {
             if (auth_.user) {
                 const historyRef = collection(db, `users/${auth_.user.uid}/history`)
-                const q = query(historyRef, limit(10));
+                const q = query(historyRef, orderBy("time", "desc"), limit(10));
 
                 const querySnapshot = await getDocs(q);
                 if (querySnapshot.empty) {
