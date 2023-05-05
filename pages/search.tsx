@@ -155,7 +155,7 @@ export default function Search() {
                                 value={query}
                                 onChange={(event) => setQuery(event.target.value)}
                                 placeholder="Type here..."
-                                className={`w-full px-3 py-2 text-gray-800 border-gray-300 rounded-md outline-none ${userData.credits === 0 ? "ring-4 ring-red-700" : "ring-4 ring-green-700"}`}
+                                className={`w-full p-2.5 text-gray-800 border-gray-300 rounded-md outline-none ${userData.credits === 0 ? "ring-4 ring-red-700" : "ring-4 ring-green-700"}`}
                             />
                             <p className="text-gray-500 text-end">Quota remaining: {userData?.credits}</p>
                             <button type="submit" disabled={loading} className={`${loading && "opacity-30"} block py-2 mx-auto mt-10 border rounded w-fit px-9`}>

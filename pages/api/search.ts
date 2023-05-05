@@ -15,7 +15,7 @@ if(firebaseAdmin.apps.length === 0){
 
 // OpenAi Initiatization
 const configuration = new Configuration({
-  apiKey: process.env.MACHA_OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
