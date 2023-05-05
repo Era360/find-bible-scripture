@@ -193,5 +193,9 @@ export default async function handler(
         scripture: parseScripture(theScripture)
       });
   }
-  } 
+  } else {
+    return res.status(404).json({
+      "text": "not found"
+    });
+  }
 }
