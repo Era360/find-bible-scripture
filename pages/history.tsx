@@ -9,6 +9,7 @@ import { db } from '@/firebase'
 import { Data } from './api/search'
 import Ellipsis from '@/components/ellipsis/ellipsis'
 import Link from 'next/link'
+import Head from 'next/head'
 
 interface HistoryData extends Data {
     id: string
@@ -50,6 +51,9 @@ function History() {
 
     return (
         <div>
+            <Head>
+                <title>History | Discover the Bible in a whole new way</title>
+            </Head>
             <Header />
             <section>
                 <h2 className='my-5 text-4xl font-semibold text-center'>History</h2>
