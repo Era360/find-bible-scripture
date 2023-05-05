@@ -3,13 +3,12 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import firebaseAdmin from 'firebase-admin'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import { Configuration, OpenAIApi } from 'openai'
-let serviceAccount = require('../../service-keys.json')
 
 
 // Firebase Initiatization
 if(firebaseAdmin.apps.length === 0){
   firebaseAdmin.initializeApp({
-    credential: firebaseAdmin.credential.cert(serviceAccount)
+    credential: firebaseAdmin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string))
   })
 }
 
