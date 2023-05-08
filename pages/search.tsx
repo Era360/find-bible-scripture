@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { signInWithPopup, signOut } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
@@ -13,6 +13,7 @@ import { useAuth } from "@/utils/use-auth";
 import { auth, db, google_provider } from "@/firebase";
 import Ellipsis from "@/components/ellipsis/ellipsis";
 import { Data } from "./api/search";
+import Footer from "@/components/footer";
 
 type UserDataType = {
     credits: number | null
@@ -123,18 +124,17 @@ export default function Search() {
                         })
                     } else {
                         setDoc(doc(db, `users/${user.user.uid}`), {
-                            credits: 3
+                            credits: 10
                         })
                         setuserData({
-                            credits: 3
+                            credits: 10
                         })
                     }
                 })
 
         } catch (error) {
             setloading(false);
-            const error_message = (error as Error).message;
-            console.log(error_message)
+            console.error((error as Error).message)
         }
     };
 
@@ -205,6 +205,7 @@ export default function Search() {
                                     </button>
                             }
                         </div>
+                        <Footer />
                     </div>
             }
             <Toaster />

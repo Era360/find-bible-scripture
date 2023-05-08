@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { signOut } from 'firebase/auth'
 
 // Local imports
@@ -7,7 +8,6 @@ import { useAuth } from '@/utils/use-auth'
 import { auth } from '@/firebase'
 import Avatar from './avatar/avatar'
 import Popover from './popover'
-import { useRouter } from 'next/router'
 
 function Header() {
     const auth_ = useAuth()

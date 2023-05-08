@@ -23,7 +23,7 @@ function Popover({ content, children }: PopoverProps) {
 
             {isOpen && (
                 <div className="absolute right-0 z-10 w-48 mt-1 bg-white rounded-md shadow-lg top-full ring-1 ring-black ring-opacity-5">
-                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    <div className="py-1" aria-orientation="vertical">
                         {content}
                     </div>
                 </div>
