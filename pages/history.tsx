@@ -9,6 +9,9 @@ import { useAuth } from '@/utils/use-auth'
 import { db } from '@/firebase'
 import { Data } from './api/search'
 import Ellipsis from '@/components/ellipsis/ellipsis'
+import Link from 'next/link'
+import Image from 'next/image'
+import Footer from '@/components/footer'
 
 interface HistoryData extends Data {
     id: string
@@ -17,6 +20,7 @@ interface HistoryData extends Data {
 function History() {
     const [historyData, sethistoryData] = useState<Array<HistoryData>>([])
     const [noData, setnoData] = useState<boolean>(false)
+    const [loading, setloading] = useState<boolean>(false)
     const auth_ = useAuth()
     const navigate = useRouter()
 
@@ -55,7 +59,7 @@ function History() {
             </Head>
             <Header />
             <section>
-                <h2 className='my-5 text-2xl font-semibold text-center md:text-4xl'>History</h2>
+                {auth_.user && <h2 className='my-5 text-2xl font-semibold text-center md:text-4xl'>History</h2>}
                 {
                     noData ? <div className='flex flex-col items-center mx-auto mt-10 w-fit'>
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-file-earmark-excel" viewBox="0 0 16 16">
@@ -65,28 +69,41 @@ function History() {
                         <p className='text-lg'>No history available</p>
                     </div>
                         :
-                        historyData.length === 0 ? <div className='mt-32 text-center'>
-                            <Ellipsis />
-                        </div>
-                            :
-                            <div className='w-5/6 mx-auto mb-10 space-y-10 md:w-3/4'>
-                                {
-                                    historyData.map((hist, index) => (
-                                        <div key={index} className="px-6 py-2 mx-auto border border-gray-600 rounded-md md:px-10 w-fit hover:shadow-md hover:shadow-black">
-                                            <p><span className="font-bold">Story: </span>{hist.story}</p>
-                                            {
-                                                hist.scripture?.trim() === "not found" &&
-                                                <div className='mx-auto my-1 w-fit'>
-                                                    <button onClick={() => {
-                                                        navigate.push(`/search?story=${hist.id}`)
-                                                    }} className='px-3 py-1 border rounded'>Edit Story</button>
-                                                </div>
-                                            }
-                                            <p className={`text-lg md:text-xl font-bold text-center ${hist.scripture?.trim() !== "not found" ? "border-b-2 md:border-b-4" : "border-t-2"}`}>{hist.scripture}</p>
-                                            <p className="my-3 text-base text-justify md:text-center md:text-xl">{hist.scriptureText}</p>
-                                        </div>
-                                    ))
-                                }
+                        auth_.user ? (
+                            historyData.length === 0 ? <div className='mt-32 text-center'>
+                                <Ellipsis />
+                            </div>
+                                :
+                                <div className='w-5/6 mx-auto mb-10 space-y-10 md:w-3/4'>
+                                    {
+                                        historyData.map((hist, index) => (
+                                            <div key={index} className="px-6 py-2 mx-auto border border-gray-600 rounded-md md:px-10 w-fit hover:shadow-md hover:shadow-black">
+                                                <p><span className="font-bold">Story: </span>{hist.story}</p>
+                                                {
+                                                    hist.scripture?.trim() === "not found" &&
+                                                    <div className='mx-auto my-1 w-fit'>
+                                                        <button onClick={() => {
+                                                            navigate.push(`/search?story=${hist.id}`)
+                                                        }} className='px-3 py-1 border rounded'>Edit Story</button>
+                                                    </div>
+                                                }
+                                                <p className={`text-lg md:text-xl font-bold text-center ${hist.scripture?.trim() !== "not found" ? "border-b-2 md:border-b-4" : "border-t-2"}`}>{hist.scripture}</p>
+                                                <p className="my-3 text-base text-justify md:text-center md:text-xl">{hist.scriptureText}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                        ) :
+                            <div className="py-20 space-y-8 md:space-y-16">
+                                <h3 className="max-w-4xl mx-auto mb-5 text-xl font-bold text-center text-gray-100 sm:text-3xl">
+                                    Sign in to view your history.
+                                </h3>
+                                <div className="h-[250px] flex flex-col items-center space-y-4 md:space-y-10 max-w-[670px] mt-2 mx-auto">
+                                    <Link href="/search" className="flex items-center px-5 py-2 space-x-2 font-semibold text-black bg-gray-200 md:px-6 md:py-3 rounded-2xl">
+                                        Sign in
+                                    </Link>
+                                </div>
+                                <Footer />
                             </div>
                 }
             </section>

@@ -205,7 +205,6 @@ export default function Search() {
                                     </button>
                             }
                         </div>
-                        <Footer />
                     </div>
             }
             <Toaster />
