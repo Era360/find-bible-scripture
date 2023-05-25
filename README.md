@@ -20,7 +20,7 @@ git clone https://github.com/Era360/find-bible-scripture
 
 Create a `.env` file in root directory of project. And store your Firebase Project Configurations in it, as shown in the .example.env file.
 
-Also get you `OPENAI API keys` from [here](https://platform.openai.com/account/api-keys) and paste them on your `.env` file.
+Also get your `OPENAI API keys` from [here](https://platform.openai.com/account/api-keys) and paste them on your `.env` file.
 
 ### Installing the dependencies
 
