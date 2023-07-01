@@ -93,14 +93,15 @@ export default async function handler(
         model: "text-davinci-003",
         prompt: `Find a scripture in the Bible that matches a description, 
         if its not in the bible just say "not found" dont say anything else, the response should be in format of book : chapter : starting verse - ending verse, 
-        Dont say what the scripture says. Here is the description: ${req.body.query}`,
+        Dont say what the scripture says and no any other text is allowed. Everything should be in one line. Here is the description: ${req.body.query}`,
         max_tokens: 20,
       });
       theScripture = completion.data.choices[0].text as string;
-      console.log("Response: ", completion.data.choices[0].text);
+      console.log(`Response: ${completion.data.choices[0].text}`);
       console.log(
-        "Parsed response: ",
-        parseScripture(completion.data.choices[0].text as string)
+        `Parsed response: ${parseScripture(
+          completion.data.choices[0].text as string
+        )}`
       );
     } catch (error: any) {
       console.log("Failed Fetching from openai....");
@@ -148,7 +149,7 @@ export default async function handler(
           scripture: "not found",
         });
       } else {
-        console.log(`Getting scripture: ${parseScripture(theScripture)}} ....`);
+        console.log(`Getting scripture: ${parseScripture(theScripture)}....`);
         const response = await fetch(
           `https://bible-api.com/${parseScripture(theScripture)}`,
           {

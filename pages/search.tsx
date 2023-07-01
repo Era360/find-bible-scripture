@@ -160,9 +160,9 @@ export default function Search() {
                                 value={query}
                                 onChange={(event) => setQuery(event.target.value)}
                                 placeholder="Type here..."
-                                className={`w-full p-2.5 text-sm md:text-base text-gray-800 border-gray-300 rounded-md outline-none ${userData.credits ?
-                                    userData.credits <= 3 ? "ring-4 ring-yellow-500" :
-                                        userData.credits === 0 ? "ring-4 ring-red-700" : "ring-4 ring-green-700" :
+                                className={`w-full p-2.5 text-sm md:text-base text-gray-800 border-gray-300 rounded-md outline-none ${userData.credits !== null ?
+                                    userData.credits === 0 ? "ring-4 ring-red-700" :
+                                        userData.credits <= 3 ? "ring-4 ring-yellow-500" : "ring-4 ring-green-700" :
                                     "ring-4 ring-gray-800"
                                     }`}
                             />

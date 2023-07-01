@@ -77,10 +77,10 @@ function History() {
                                 <div className='w-5/6 mx-auto mb-10 space-y-10 md:w-3/4'>
                                     {
                                         historyData.map((hist, index) => (
-                                            <div key={index} className="px-6 py-2 mx-auto border border-gray-600 rounded-md md:px-10 w-fit hover:shadow-md hover:shadow-black">
+                                            <div key={index} className={`px-6 py-2 mx-auto border ${hist.scripture?.trim() === "not found" || !hist.scriptureText ? "border-red-600" : "border-gray-600"} rounded-md md:px-10 w-fit hover:shadow-md hover:shadow-black`}>
                                                 <p><span className="font-bold">Story: </span>{hist.story}</p>
                                                 {
-                                                    hist.scripture?.trim() === "not found" &&
+                                                    hist.scripture?.trim() === "not found" || !hist.scriptureText &&
                                                     <div className='mx-auto my-1 w-fit'>
                                                         <button onClick={() => {
                                                             navigate.push(`/search?story=${hist.id}`)
