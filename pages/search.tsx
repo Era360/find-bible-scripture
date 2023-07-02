@@ -170,7 +170,7 @@ export default function Search() {
                                 <Popover content={
                                     <div className="flex flex-col items-center justify-center p-4 space-y-2">
                                         <h3 className="font-bold text-gray-800">How to pay</h3>
-                                        <p className="text-sm text-center text-gray-800">We currently don't support online payment, you can contact me through <Link className="text-blue-600 underline" href="mailto:mkumboelia@gmail.com">my email</Link></p>
+                                        <p className="text-sm text-center text-gray-800">We currently don&apos;t support online payment, you can contact me through <Link className="text-blue-600 underline" href="mailto:mkumboelia@gmail.com">my email</Link></p>
                                     </div>
                                 }>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
