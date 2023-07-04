@@ -3,19 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: #000;
-  --background-start-rgb: #d6dbdc;
-  --background-end-rgb: #ffffff;
+  font-family: "Times New Roman";
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: #fff;
-    --background-end-rgb: #111827;
+    font-family: "Times New Roman";
   }
-}
-
-body {
-  color: var(--foreground-rgb);
-  background: var(--background-end-rgb);
 }

@@ -1,17 +1,18 @@
-import React from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
+import React from "react";
+import Head from "next/head";
+import Link from "next/link";
 
 // local imports
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 export default function Home() {
-
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-azure-50 text-azure-950 dark:bg-azure-950 dark:text-azure-50">
       <Head>
-        <title>Find Bible Scripture | Discover the Bible in a whole new way</title>
+        <title>
+          Find Bible Scripture | Discover the Bible in a whole new way
+        </title>
       </Head>
 
       <Header />
@@ -22,10 +23,14 @@ export default function Home() {
             Discover the Bible in a whole new way
           </h1>
           <p className="max-w-2xl mx-auto mt-3 text-lg leading-7 md:text-xl sm:mt-4">
-            Search for specific Bible verses by describing a small story, parable or event in the Bible.
+            Search for specific Bible verses by describing a small story,
+            parable or event in the Bible.
           </p>
           <div className="max-w-md mx-auto mt-10">
-            <Link href="/search" className='px-10 py-3 text-xl font-medium text-white bg-gray-800 rounded hover:bg-gray-700'>
+            <Link
+              href="/search"
+              className="px-10 py-3 text-xl font-medium text-white rounded bg-azure-800 hover:bg-azure-700"
+            >
               Search
             </Link>
           </div>
@@ -33,6 +38,5 @@ export default function Home() {
       </div>
       <Footer />
     </div>
-  )
+  );
 }
-
