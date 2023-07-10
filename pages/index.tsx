@@ -8,7 +8,7 @@ import Footer from "@/components/footer";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-azure-50 text-azure-950 dark:bg-azure-950 dark:text-azure-50">
+    <div className="flex flex-col min-h-screen bg-azure-50 text-azure-900 dark:bg-azure-900 dark:text-azure-50">
       <Head>
         <title>
           Find Bible Scripture | Discover the Bible in a whole new way
