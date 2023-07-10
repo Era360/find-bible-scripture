@@ -253,7 +253,7 @@ export default function Search() {
           </div>
         </div>
       ) : (
-        <div className="container mx-auto">
+        <div className="container py-16 mx-auto my-auto">
           <div className="flex flex-col justify-center px-0 py-48 space-y-2 lg:px-60 mx-14 md:mx-auto md:space-y-10">
             <h3 className="text-3xl font-bold text-center md:text-4xl lg:text-5xl">
               Have a story in mind and would you like to know which&nbsp;
