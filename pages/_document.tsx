@@ -33,7 +33,7 @@ export default function Document() {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogimage} />
       </Head>
-      <body>
+      <body className="bg-azure-50 text-azure-900 dark:bg-azure-900 dark:text-azure-50">
         <Main />
         <NextScript />
       </body>
