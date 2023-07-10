@@ -3,7 +3,7 @@ import Link from "next/link";
 
 function Footer() {
   return (
-    <footer className="py-2 mx-10 mt-auto border-t-2 border-azure-300">
+    <footer className="py-2 mx-10 mt-auto border-t-2 border-azure-200 dark:border-azure-800">
       <div className="flex mx-auto space-x-10 w-fit">
         <Link
           href="https://twitter.com/eliah_mkumbo"

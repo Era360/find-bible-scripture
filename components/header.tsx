@@ -15,7 +15,7 @@ function Header() {
   const navigate = useRouter();
 
   return (
-    <nav className="mx-2 border-b-2 border-azure-300 sm:mx-10">
+    <nav className="mx-6 border-b-2 border-azure-100/50 dark:border-azure-800/50 text-azure-50 dark:text-azure-900 sm:mx-10">
       <div className="container mx-auto">
         <div className="flex items-center justify-between py-4">
           <div className="flex-shrink-0">
@@ -37,7 +37,7 @@ function Header() {
                   content={
                     <div className="px-4 py-2 ">
                       <div
-                        className="flex items-center space-x-2 text-azure-700 cursor-pointer hover:bg-azure-100 hover:text-azure-900"
+                        className="flex items-center space-x-2 cursor-pointer text-azure-700 hover:bg-azure-100 hover:text-azure-900"
                         onClick={() => {
                           signOut(auth);
                           navigate.push("/search");
@@ -71,7 +71,7 @@ function Header() {
             ) : (
               <Link
                 href="/search"
-                className="p-2 text-lg font-medium text-white bg-azure-800 rounded-md hover:bg-azure-700"
+                className="px-6 py-2 text-lg font-medium text-white rounded-md bg-azure-800 hover:bg-azure-700 dark:bg-azure-50 dark:hover:bg-azure-300"
               >
                 Sign Up
               </Link>
@@ -119,10 +119,9 @@ function Header() {
                   ) : (
                     <Link
                       href="/search"
-                      className="block text-center text-azure-700 cursor-pointer hover:bg-azure-100 hover:text-azure-900"
+                      className="block text-center cursor-pointer text-azure-700 hover:bg-azure-100 hover:text-azure-900"
                     >
-                      {" "}
-                      Sign Up{" "}
+                      Sign Up
                     </Link>
                   )}
                 </div>
