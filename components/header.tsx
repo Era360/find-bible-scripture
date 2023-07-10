@@ -15,7 +15,7 @@ function Header() {
   const navigate = useRouter();
 
   return (
-    <nav className="mx-6 border-b-2 border-azure-100/50 dark:border-azure-800/50 text-azure-50 dark:text-azure-900 sm:mx-10">
+    <nav className="mx-6 border-b-2 border-azure-100/50 dark:border-azure-800 text-azure-50 dark:text-azure-900 sm:mx-10">
       <div className="container mx-auto">
         <div className="flex items-center justify-between py-4">
           <div className="flex-shrink-0">
