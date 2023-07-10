@@ -161,7 +161,7 @@ export default function Search() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Type here..."
-              className={`w-full p-2.5 text-sm md:text-base text-azure-800 border-azure-300 rounded-md outline-none ${
+              className={`w-full p-2.5 text-sm md:text-base text-azure-800 border-azure-200 dark:border-azure-800 rounded-md outline-none ${
                 userData.credits !== null
                   ? userData.credits === 0
                     ? "ring-4 ring-red-700"
@@ -178,9 +178,9 @@ export default function Search() {
                     <h3 className="font-bold text-azure-800">How to pay</h3>
                     <p className="text-sm text-center text-azure-800">
                       We currently don&apos;t support online payment, you can
-                      contact me through{" "}
+                      contact me through
                       <Link
-                        className="text-blue-600 underline"
+                        className="underline text-azure-600"
                         href="mailto:mkumboelia@gmail.com"
                       >
                         my email
@@ -223,7 +223,7 @@ export default function Search() {
             ) : (
               <>
                 {results.scripture && (
-                  <div className="px-10 py-2 mx-auto border-2 border-azure-600 rounded-md w-fit">
+                  <div className="px-10 py-2 mx-auto border-2 rounded-md border-azure-600 w-fit">
                     <p>
                       <span className="font-bold">Story: </span>
                       {results.story}
@@ -253,33 +253,42 @@ export default function Search() {
           </div>
         </div>
       ) : (
-        <div className="py-20 space-y-5 md:space-y-10">
-          <h3 className="max-w-4xl mx-auto mb-5 text-xl font-bold text-center text-azure-100 sm:text-3xl">
-            Have a story you remember and want to know what{" "}
-            <span className="text-azure-600">Bible Scripture</span> it was?
-          </h3>
-          <div className="h-[250px] flex flex-col items-center space-y-4 md:space-y-10 max-w-[670px] mt-2 mx-auto">
-            <div className="max-w-xl text-lg text-azure-300">
-              Sign up to get{" "}
-              <span className="font-bold text-blue-500">10 free</span> stories
-              to ask.
+        <div className="container mx-auto">
+          <div className="flex flex-col justify-center px-0 py-48 space-y-2 lg:px-60 mx-14 md:mx-auto md:space-y-10">
+            <h3 className="text-3xl font-bold text-center md:text-4xl lg:text-5xl">
+              Discover the&nbsp;
+              <span className="dark:text-azure-300 text-azure-400">
+                Bible Scripture
+              </span>
+              &nbsp;behind your memorable stories today
+            </h3>
+            <div className="flex flex-col items-center w-full mx-auto text-center space-y-7 md:space-y-10">
+              <div className="max-w-2xl text-lg md:max-w-lg">
+                Join us and receive a collection of&nbsp;
+                <span className="font-bold dark:text-azure-300 text-azure-400">
+                  10 free
+                </span>
+                &nbsp;stories to explore their corresponding Bible Scriptures.
+                Gain insight into the Word of God through your cherished
+                narratives.
+              </div>
+              {loading ? (
+                <Ellipsis />
+              ) : (
+                <button
+                  onClick={() => withGoogle()}
+                  className="flex items-center px-6 py-3 space-x-2 font-semibold rounded-lg w-fit dark:bg-azure-50 bg-azure-950 dark:text-azure-800 text-azure-50"
+                >
+                  <Image
+                    src="/google.png"
+                    width={20}
+                    height={20}
+                    alt="google's logo"
+                  />
+                  <span>Sign in with Google</span>
+                </button>
+              )}
             </div>
-            {loading ? (
-              <Ellipsis />
-            ) : (
-              <button
-                onClick={() => withGoogle()}
-                className="flex items-center px-5 py-2 space-x-2 font-semibold text-black bg-azure-200 md:px-6 md:py-3 rounded-2xl"
-              >
-                <Image
-                  src="/google.png"
-                  width={20}
-                  height={20}
-                  alt="google's logo"
-                />
-                <span>Sign in with Google</span>
-              </button>
-            )}
           </div>
         </div>
       )}
