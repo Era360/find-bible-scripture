@@ -150,106 +150,109 @@ export default function Search() {
       </Head>
       <Header />
       {auth_.user ? (
-        <div className="px-4 py-20 sm:px-6 lg:px-8">
-          <h1 className="mb-8 text-xl font-bold text-center md:text-3xl">
-            Describe a small story, parable or event in the Bible.
-          </h1>
-          <form onSubmit={handleSubmit} className="max-w-5xl mx-auto">
-            <textarea
-              name="query"
-              rows={5}
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Type here..."
-              className={`w-full p-2.5 text-sm md:text-base text-azure-800 border-azure-200 dark:border-azure-800 rounded-md outline-none ${
-                userData.credits !== null
-                  ? userData.credits === 0
-                    ? "ring-4 ring-red-700"
-                    : userData.credits <= 3
-                    ? "ring-4 ring-yellow-500"
-                    : "ring-4 ring-green-700"
-                  : "ring-4 ring-azure-800"
-              }`}
-            />
-            <div className="flex items-center justify-end mt-2">
-              <Popover
-                content={
-                  <div className="flex flex-col items-center justify-center p-4 space-y-2">
-                    <h3 className="font-bold text-azure-800">How to pay</h3>
-                    <p className="text-sm text-center text-azure-800">
-                      We currently don&apos;t support online payment, you can
-                      contact me through
-                      <Link
-                        className="underline text-azure-600"
-                        href="mailto:mkumboelia@gmail.com"
-                      >
-                        my email
-                      </Link>
-                    </p>
-                  </div>
-                }
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  className="bi bi-info-circle"
-                  viewBox="0 0 16 16"
+        <div className="container py-16 mx-auto my-auto">
+          <div className="flex flex-col justify-center px-0 py-16 space-y-2 md:py-32 lg:px-60 mx-14 md:mx-auto md:space-y-10">
+            <h1 className="mb-8 text-xl font-bold text-center md:text-3xl">
+              Describe a small story, parable or event in the&nbsp;
+              <span className="dark:text-azure-300 text-azure-400">Bible</span>.
+            </h1>
+            <form onSubmit={handleSubmit} className="w-full">
+              <textarea
+                name="query"
+                rows={5}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Type here..."
+                className={`w-full p-2.5 text-sm md:text-base bg-azure-100/50 text-azure-900 dark:text-azure-200 dark:bg-azure-950 rounded-2xl outline-none ${
+                  userData.credits !== null
+                    ? userData.credits === 0
+                      ? "ring-4 ring-red-700"
+                      : userData.credits <= 3
+                      ? "ring-4 ring-yellow-500"
+                      : "ring-4 ring-green-700"
+                    : "ring-4 ring-azure-800"
+                }`}
+              />
+              <div className="flex items-center justify-end mt-2">
+                <Popover
+                  content={
+                    <div className="flex flex-col items-center justify-center p-4 space-y-2">
+                      <h3 className="font-bold text-azure-800">How to pay</h3>
+                      <p className="text-sm text-center text-azure-800">
+                        We currently don&apos;t support online payment, you can
+                        contact me through
+                        <Link
+                          className="underline text-azure-600"
+                          href="mailto:mkumboelia@gmail.com"
+                        >
+                          my email
+                        </Link>
+                      </p>
+                    </div>
+                  }
                 >
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                </svg>
-              </Popover>
-              <p className="ml-3 text-sm text-azure-500 md:text-base">
-                Quota remaining: {userData?.credits}
-              </p>
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={`${
-                loading && "opacity-30"
-              } block px-7 py-2 md:px-9 mx-auto mt-10 border rounded w-fit`}
-            >
-              Search
-            </button>
-          </form>
-          <div className="mt-10 text-center">
-            {loading ? (
-              <div>
-                <Ellipsis />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    className="bi bi-info-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                  </svg>
+                </Popover>
+                <p className="ml-3 text-sm text-azure-500 md:text-base">
+                  Quota remaining: {userData?.credits}
+                </p>
               </div>
-            ) : (
-              <>
-                {results.scripture && (
-                  <div className="px-10 py-2 mx-auto border-2 rounded-md border-azure-600 w-fit">
-                    <p>
-                      <span className="font-bold">Story: </span>
-                      {results.story}
-                    </p>
-                    <p
-                      className={`text-lg font-bold ${
-                        results.scripture.trim() !== "not found"
-                          ? "border-b-4"
-                          : "border-t-2"
-                      }`}
-                    >
-                      {results.scripture}
-                    </p>
-                    <p className="my-5 text-xl">{results.scriptureText}</p>
-                  </div>
-                )}
-              </>
-            )}
-            <Link
-              href="/history"
-              className={`${
-                results.scriptureText && "mt-5"
-              } block w-fit mx-auto hover:border rounded px-5 py-2`}
-            >
-              View History
-            </Link>
+              <button
+                type="submit"
+                disabled={loading}
+                className={`${
+                  loading && "opacity-30"
+                } block px-7 py-2 md:px-9 mx-auto mt-10 border rounded w-fit`}
+              >
+                Search
+              </button>
+            </form>
+            <div className="mt-10 text-center">
+              {loading ? (
+                <div>
+                  <Ellipsis />
+                </div>
+              ) : (
+                <>
+                  {results.scripture && (
+                    <div className="px-10 py-2 mx-auto border-2 rounded-md border-azure-600 w-fit">
+                      <p>
+                        <span className="font-bold">Story: </span>
+                        {results.story}
+                      </p>
+                      <p
+                        className={`text-lg font-bold ${
+                          results.scripture.trim() !== "not found"
+                            ? "border-b-4"
+                            : "border-t-2"
+                        }`}
+                      >
+                        {results.scripture}
+                      </p>
+                      <p className="my-5 text-xl">{results.scriptureText}</p>
+                    </div>
+                  )}
+                </>
+              )}
+              <Link
+                href="/history"
+                className={`${
+                  results.scriptureText && "mt-5"
+                } block w-fit mx-auto hover:border rounded px-5 py-2`}
+              >
+                View History
+              </Link>
+            </div>
           </div>
         </div>
       ) : (
