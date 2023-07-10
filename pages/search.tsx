@@ -256,11 +256,11 @@ export default function Search() {
         <div className="container mx-auto">
           <div className="flex flex-col justify-center px-0 py-48 space-y-2 lg:px-60 mx-14 md:mx-auto md:space-y-10">
             <h3 className="text-3xl font-bold text-center md:text-4xl lg:text-5xl">
-              Discover the&nbsp;
+              Have a story in mind and would you like to know which&nbsp;
               <span className="dark:text-azure-300 text-azure-400">
                 Bible Scripture
               </span>
-              &nbsp;behind your memorable stories today
+              &nbsp;relates to it?
             </h3>
             <div className="flex flex-col items-center w-full mx-auto text-center space-y-7 md:space-y-10">
               <div className="max-w-2xl text-lg md:max-w-lg">
