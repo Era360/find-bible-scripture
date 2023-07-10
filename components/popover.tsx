@@ -28,7 +28,7 @@ function Popover({ content, children }: PopoverProps) {
       {isOpen && (
         <div
           ref={ref}
-          className="absolute right-0 z-10 w-48 mt-1 bg-white rounded-md shadow-lg top-full ring-1 ring-black ring-opacity-5"
+          className="absolute right-0 z-10 mt-1 text-center rounded-md shadow-lg w-36 dark:bg-azure-50 bg-azure-950 dark:text-azure-800 text-azure-50 top-full"
         >
           <div className="py-1" aria-orientation="vertical">
             {content}

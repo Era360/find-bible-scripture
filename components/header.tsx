@@ -119,7 +119,7 @@ function Header() {
                   ) : (
                     <Link
                       href="/search"
-                      className="block text-center cursor-pointer text-azure-700 hover:bg-azure-100 hover:text-azure-900"
+                      className="w-full px-6 py-3 space-x-2 font-semibold rounded-lg cursor-pointer"
                     >
                       Sign Up
                     </Link>
