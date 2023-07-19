@@ -254,16 +254,16 @@ export default function Search() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col justify-center px-4 py-16 mx-auto my-auto space-y-2 md:mx-auto md:space-y-10 max-w-7xl sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-center md:text-4xl lg:text-5xl">
-            Have a story in mind and would you like to know which&nbsp;
-            <span className="dark:text-azure-300 text-azure-400">
-              Bible Scripture
-            </span>
-            &nbsp;relates to it?
-          </h3>
-          <div className="flex flex-col items-center w-full mx-auto text-center space-y-7 md:space-y-10">
-            <div className="max-w-2xl text-lg md:max-w-lg">
+        <div className="flex flex-row md:flex-col px-4 py-16 mx-auto my-auto space-y-2 md:mx-auto md:space-y-10 max-w-7xl sm:px-6 lg:px-8">
+          <div className="flex bg-azure-50 items-center text-center dark:bg-azure-950 backdrop-blur-md rounded-3xl w-full lg:w-5/12 flex-col px-4 py-20 lg:py-28 my-auto gap-4 sm:px-6 lg:px-20">
+            <h3 className="text-xl font-bold md:text-2xl lg:text-3xl">
+              Have a story in mind and would you like to know which&nbsp;
+              <span className="dark:text-azure-300 text-azure-400">
+                Bible Scripture
+              </span>
+              &nbsp;relates to it?
+            </h3>
+            <div className="max-w-2xl text-md px-4 md:max-w-lg">
               Join us and receive a collection of&nbsp;
               <span className="font-bold dark:text-azure-300 text-azure-400">
                 10 free
@@ -277,15 +277,15 @@ export default function Search() {
             ) : (
               <button
                 onClick={() => withGoogle()}
-                className="flex items-center px-6 py-3 space-x-2 font-semibold rounded-lg w-fit dark:bg-azure-50 bg-azure-950 dark:text-azure-800 text-azure-50"
+                className="flex items-center mt-4 px-6 py-3 space-x-2 font-semibold rounded-lg w-fit dark:bg-azure-50 bg-azure-950 dark:text-azure-800 text-azure-50"
               >
+                <span>Continue with</span>
                 <Image
                   src="/google.png"
                   width={20}
                   height={20}
                   alt="google's logo"
                 />
-                <span>Sign in with Google</span>
               </button>
             )}
           </div>
