@@ -63,7 +63,7 @@ function Header() {
                   content={
                     <div className="px-4 py-2 ">
                       <div
-                        className="flex items-center space-x-2 cursor-pointer text-azure-700 hover:bg-azure-100 hover:text-azure-900"
+                        className="flex items-center space-x-2 cursor-pointer text-azure-100 dark:text-azure-900"
                         onClick={() => {
                           signOut(auth);
                           navigate.push("/search");
