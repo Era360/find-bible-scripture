@@ -84,7 +84,7 @@ function History() {
               <Ellipsis />
             </div>
           ) : (
-            <div className="w-5/6 mx-auto mb-10 space-y-10 md:w-3/4">
+            <div className="container px-6 md:px-auto mx-auto mb-10 gap-6 flex flex-col">
               {historyData.map((hist, index) => (
                 <div
                   key={index}

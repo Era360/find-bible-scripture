@@ -19,7 +19,7 @@ function Popover({ content, children }: PopoverProps) {
   return (
     <div className="relative">
       <div
-        className="inline-block cursor-pointer text-azure-950 dark:text-azure-50"
+        className="flex cursor-pointer text-azure-950 dark:text-azure-50"
         onClick={togglePopover}
       >
         {children}
@@ -28,7 +28,7 @@ function Popover({ content, children }: PopoverProps) {
       {isOpen && (
         <div
           ref={ref}
-          className="absolute right-0 z-10 mt-1 text-center rounded-md shadow-lg w-36 dark:bg-azure-50 bg-azure-950 dark:text-azure-800 text-azure-50 top-full"
+          className="absolute right-0 z-10 mt-1 text-center rounded-md shadow-lg w-36 dark:bg-azure-50 hover:dark:bg-azure-300 bg-azure-950 hover:bg-azure-700 top-full"
         >
           <div className="py-1" aria-orientation="vertical">
             {content}
