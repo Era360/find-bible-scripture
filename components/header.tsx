@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut } from "firebase/auth";
@@ -13,6 +14,31 @@ import Popover from "./popover";
 function Header() {
   const auth_ = useAuth();
   const navigate = useRouter();
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(
+    window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  useEffect(() => {
+    const handleColorSchemeChange = (e: MediaQueryListEvent) => {
+      setIsDarkTheme(e.matches);
+    };
+
+    const colorSchemeMediaQuery = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    );
+    colorSchemeMediaQuery.addEventListener("change", handleColorSchemeChange);
+
+    return () => {
+      colorSchemeMediaQuery.removeEventListener(
+        "change",
+        handleColorSchemeChange
+      );
+    };
+  }, []);
+  const logoSrc = isDarkTheme
+    ? "/images/logo/brand-logo-light.svg"
+    : "/images/logo/brand-logo.svg";
 
   return (
     <nav className="mx-6 border-b-2 border-azure-100/50 dark:border-azure-800 text-azure-50 dark:text-azure-900 sm:mx-10">
@@ -22,10 +48,10 @@ function Header() {
             <Link href="/" className="text-xl font-bold">
               <Image
                 className="w-28"
-                src="/images/logo/brand-logo.svg"
+                src={logoSrc}
                 width={500}
                 height={500}
-                alt="Picture of the author"
+                alt="Find Bible Scripture"
               />
             </Link>
           </div>
