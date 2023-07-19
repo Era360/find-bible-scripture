@@ -144,154 +144,150 @@ export default function Search() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Head>
         <title>Search | Discover the Bible in a whole new way</title>
       </Head>
       <Header />
       {auth_.user ? (
-        <div className="container py-16 mx-auto my-auto">
-          <div className="flex flex-col justify-center px-0 py-16 space-y-2 md:py-32 lg:px-60 mx-14 md:mx-auto md:space-y-10">
-            <h1 className="mb-8 text-xl font-bold text-center md:text-3xl">
-              Describe a small story, parable or event in the&nbsp;
-              <span className="dark:text-azure-300 text-azure-400">Bible</span>.
-            </h1>
-            <form onSubmit={handleSubmit} className="w-full">
-              <textarea
-                name="query"
-                rows={5}
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Type here..."
-                className={`w-full p-2.5 text-sm md:text-base bg-azure-100/50 text-azure-900 dark:text-azure-200 dark:bg-azure-950 rounded-2xl outline-none ${
-                  userData.credits !== null
-                    ? userData.credits === 0
-                      ? "ring-4 ring-red-700"
-                      : userData.credits <= 3
-                      ? "ring-4 ring-yellow-500"
-                      : "ring-4 ring-green-700"
-                    : "ring-4 ring-azure-800"
-                }`}
-              />
-              <div className="flex items-center justify-end mt-2">
-                <Popover
-                  content={
-                    <div className="flex flex-col items-center justify-center p-4 space-y-2">
-                      <h3 className="font-bold text-azure-800">How to pay</h3>
-                      <p className="text-sm text-center text-azure-800">
-                        We currently don&apos;t support online payment, you can
-                        contact me through
-                        <Link
-                          className="underline text-azure-600"
-                          href="mailto:mkumboelia@gmail.com"
-                        >
-                          my email
-                        </Link>
-                      </p>
-                    </div>
-                  }
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    className="bi bi-info-circle"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                  </svg>
-                </Popover>
-                <p className="ml-3 text-sm text-azure-500 md:text-base">
-                  Quota remaining: {userData?.credits}
-                </p>
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className={`${
-                  loading && "opacity-30"
-                } block px-7 py-2 md:px-9 mx-auto mt-10 border rounded w-fit`}
-              >
-                Search
-              </button>
-            </form>
-            <div className="mt-10 text-center">
-              {loading ? (
-                <div>
-                  <Ellipsis />
-                </div>
-              ) : (
-                <>
-                  {results.scripture && (
-                    <div className="px-10 py-2 mx-auto border-2 rounded-md border-azure-600 w-fit">
-                      <p>
-                        <span className="font-bold">Story: </span>
-                        {results.story}
-                      </p>
-                      <p
-                        className={`text-lg font-bold ${
-                          results.scripture.trim() !== "not found"
-                            ? "border-b-4"
-                            : "border-t-2"
-                        }`}
+        <div className="flex flex-col justify-center space-y-2 md:py-32 md:mx-auto md:space-y-10 px-4 py-16 mx-auto my-auto max-w-7xl sm:px-6 lg:px-8">
+          <h1 className="mb-8 text-xl font-bold text-center md:text-3xl">
+            Describe a small story, parable or event in the&nbsp;
+            <span className="dark:text-azure-300 text-azure-400">Bible</span>.
+          </h1>
+          <form onSubmit={handleSubmit} className="w-full">
+            <textarea
+              name="query"
+              rows={5}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Type here..."
+              className={`w-full p-2.5 text-sm md:text-base bg-azure-100/50 text-azure-900 dark:text-azure-200 dark:bg-azure-950 rounded-2xl outline-none ${
+                userData.credits !== null
+                  ? userData.credits === 0
+                    ? "ring-4 ring-red-700"
+                    : userData.credits <= 3
+                    ? "ring-4 ring-yellow-500"
+                    : "ring-4 ring-green-700"
+                  : "ring-4 ring-azure-800"
+              }`}
+            />
+            <div className="flex items-center justify-end mt-2">
+              <Popover
+                content={
+                  <div className="flex flex-col items-center justify-center p-4 space-y-2">
+                    <h3 className="font-bold text-azure-800">How to pay</h3>
+                    <p className="text-sm text-center text-azure-800">
+                      We currently don&apos;t support online payment, you can
+                      contact me through
+                      <Link
+                        className="underline text-azure-600"
+                        href="mailto:mkumboelia@gmail.com"
                       >
-                        {results.scripture}
-                      </p>
-                      <p className="my-5 text-xl">{results.scriptureText}</p>
-                    </div>
-                  )}
-                </>
-              )}
-              <Link
-                href="/history"
-                className={`${
-                  results.scriptureText && "mt-5"
-                } block w-fit mx-auto hover:border rounded px-5 py-2`}
+                        my email
+                      </Link>
+                    </p>
+                  </div>
+                }
               >
-                View History
-              </Link>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  className="bi bi-info-circle"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                </svg>
+              </Popover>
+              <p className="ml-3 text-sm text-azure-500 md:text-base">
+                Quota remaining: {userData?.credits}
+              </p>
             </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`${
+                loading && "opacity-30"
+              } block px-7 py-2 md:px-9 mx-auto mt-10 border rounded w-fit`}
+            >
+              Search
+            </button>
+          </form>
+          <div className="mt-10 text-center">
+            {loading ? (
+              <div>
+                <Ellipsis />
+              </div>
+            ) : (
+              <>
+                {results.scripture && (
+                  <div className="px-10 py-2 mx-auto border-2 rounded-md border-azure-600 w-fit">
+                    <p>
+                      <span className="font-bold">Story: </span>
+                      {results.story}
+                    </p>
+                    <p
+                      className={`text-lg font-bold ${
+                        results.scripture.trim() !== "not found"
+                          ? "border-b-4"
+                          : "border-t-2"
+                      }`}
+                    >
+                      {results.scripture}
+                    </p>
+                    <p className="my-5 text-xl">{results.scriptureText}</p>
+                  </div>
+                )}
+              </>
+            )}
+            <Link
+              href="/history"
+              className={`${
+                results.scriptureText && "mt-5"
+              } block w-fit mx-auto hover:border rounded px-5 py-2`}
+            >
+              View History
+            </Link>
           </div>
         </div>
       ) : (
-        <div className="container py-16 mx-auto my-auto">
-          <div className="flex flex-col justify-center px-0 py-48 space-y-2 lg:px-60 mx-14 md:mx-auto md:space-y-10">
-            <h3 className="text-3xl font-bold text-center md:text-4xl lg:text-5xl">
-              Have a story in mind and would you like to know which&nbsp;
-              <span className="dark:text-azure-300 text-azure-400">
-                Bible Scripture
+        <div className="flex flex-col justify-center space-y-2 md:mx-auto md:space-y-10 px-4 py-16 mx-auto my-auto max-w-7xl sm:px-6 lg:px-8">
+          <h3 className="text-3xl font-bold text-center md:text-4xl lg:text-5xl">
+            Have a story in mind and would you like to know which&nbsp;
+            <span className="dark:text-azure-300 text-azure-400">
+              Bible Scripture
+            </span>
+            &nbsp;relates to it?
+          </h3>
+          <div className="flex flex-col items-center w-full mx-auto text-center space-y-7 md:space-y-10">
+            <div className="max-w-2xl text-lg md:max-w-lg">
+              Join us and receive a collection of&nbsp;
+              <span className="font-bold dark:text-azure-300 text-azure-400">
+                10 free
               </span>
-              &nbsp;relates to it?
-            </h3>
-            <div className="flex flex-col items-center w-full mx-auto text-center space-y-7 md:space-y-10">
-              <div className="max-w-2xl text-lg md:max-w-lg">
-                Join us and receive a collection of&nbsp;
-                <span className="font-bold dark:text-azure-300 text-azure-400">
-                  10 free
-                </span>
-                &nbsp;stories to explore their corresponding Bible Scriptures.
-                Gain insight into the Word of God through your cherished
-                narratives.
-              </div>
-              {loading ? (
-                <Ellipsis />
-              ) : (
-                <button
-                  onClick={() => withGoogle()}
-                  className="flex items-center px-6 py-3 space-x-2 font-semibold rounded-lg w-fit dark:bg-azure-50 bg-azure-950 dark:text-azure-800 text-azure-50"
-                >
-                  <Image
-                    src="/google.png"
-                    width={20}
-                    height={20}
-                    alt="google's logo"
-                  />
-                  <span>Sign in with Google</span>
-                </button>
-              )}
+              &nbsp;stories to explore their corresponding Bible Scriptures.
+              Gain insight into the Word of God through your cherished
+              narratives.
             </div>
+            {loading ? (
+              <Ellipsis />
+            ) : (
+              <button
+                onClick={() => withGoogle()}
+                className="flex items-center px-6 py-3 space-x-2 font-semibold rounded-lg w-fit dark:bg-azure-50 bg-azure-950 dark:text-azure-800 text-azure-50"
+              >
+                <Image
+                  src="/google.png"
+                  width={20}
+                  height={20}
+                  alt="google's logo"
+                />
+                <span>Sign in with Google</span>
+              </button>
+            )}
           </div>
         </div>
       )}
