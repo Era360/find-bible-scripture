@@ -150,7 +150,7 @@ export default function Search() {
       </Head>
       <Header />
       {auth_.user ? (
-        <div className="flex flex-col justify-center space-y-2 md:py-32 md:mx-auto md:space-y-10 px-4 py-16 mx-auto my-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="flex flex-col justify-center px-4 py-16 mx-auto my-auto space-y-2 md:py-32 md:mx-auto md:space-y-10 max-w-7xl sm:px-6 lg:px-8">
           <h1 className="mb-8 text-xl font-bold text-center md:text-3xl">
             Describe a small story, parable or event in the&nbsp;
             <span className="dark:text-azure-300 text-azure-400">Bible</span>.
@@ -175,13 +175,13 @@ export default function Search() {
             <div className="flex items-center justify-end mt-2">
               <Popover
                 content={
-                  <div className="flex flex-col items-center justify-center p-4 space-y-2">
-                    <h3 className="font-bold text-azure-800">How to pay</h3>
-                    <p className="text-sm text-center text-azure-800">
+                  <div className="flex flex-col items-center justify-center p-4 space-y-2 dark:text-azure-800 text-azure-50">
+                    <h3 className="font-bold">How to pay</h3>
+                    <p className="text-sm text-justify">
                       We currently don&apos;t support online payment, you can
-                      contact me through
+                      contact me through{" "}
                       <Link
-                        className="underline text-azure-600"
+                        className="underline"
                         href="mailto:mkumboelia@gmail.com"
                       >
                         my email
@@ -254,7 +254,7 @@ export default function Search() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col justify-center space-y-2 md:mx-auto md:space-y-10 px-4 py-16 mx-auto my-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="flex flex-col justify-center px-4 py-16 mx-auto my-auto space-y-2 md:mx-auto md:space-y-10 max-w-7xl sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-center md:text-4xl lg:text-5xl">
             Have a story in mind and would you like to know which&nbsp;
             <span className="dark:text-azure-300 text-azure-400">
