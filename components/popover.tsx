@@ -19,7 +19,7 @@ function Popover({ content, children }: PopoverProps) {
   return (
     <div className="relative">
       <div
-        className="inline-block cursor-pointer text-azure-950 dark:text-azure-50"
+        className="flex cursor-pointer text-azure-950 dark:text-azure-50"
         onClick={togglePopover}
       >
         {children}
