@@ -6,7 +6,7 @@ function Footer() {
     <footer className="container mx-auto mb-6 md:mb-12">
       <div className="flex items-center justify-center gap-3 p-4 mx-auto border-2 rounded-2xl w-fit dark:border-azure-100/10 border-azure-900/5 bg-azure-900/5 dark:backdrop-blur-xl dark:bg-azure-50/10">
         <Link
-          href="https://twitter.com/eliah_mkumbo"
+          href="https://github.com/Era360/find-bible-scripture"
           target="_blank"
           className="group"
         >
@@ -20,7 +20,7 @@ function Footer() {
           </svg>
         </Link>
         <Link
-          href="https://github.com/Era360/find-bible-scripture"
+          href="https://twitter.com/eliah_mkumbo"
           target="_blank"
           className="group"
         >
