@@ -26,7 +26,11 @@ const parseNotFound = (text: string) => {
 };
 
 const parseScripture = (text: string) => {
-  return `${text.trim().split(" ")[0]} ${text.trim().split(" ")[1]}`;
+  let response = text.trim().split(" ");
+  if (response.length === 3) {
+    return `${response[0]} ${response[1]} ${response[2]}`;
+  }
+  return `${response[0]} ${response[1]}`;
 };
 
 export type Data = {
