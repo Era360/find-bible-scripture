@@ -81,6 +81,14 @@ export default function Search() {
       });
       return;
     }
+
+    if (query.length < 50) {
+      toast("The more you describe, the better the results.", {
+        icon: "🛈",
+        duration: 6000,
+      });
+    }
+
     setloading(true);
     let bodyData = {
       query,
