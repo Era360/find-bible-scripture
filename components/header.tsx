@@ -97,7 +97,7 @@ function Header() {
             ) : (
               <Link
                 href="/search"
-                className="px-6 py-2 text-lg font-medium text-white rounded-md bg-azure-800 hover:bg-azure-700 dark:bg-azure-50 dark:hover:bg-azure-300"
+                className="px-6 py-2 text-lg font-medium text-white rounded-md dark:text-azure-800 bg-azure-800 hover:bg-azure-700 dark:bg-azure-50 dark:hover:bg-azure-300"
               >
                 Sign Up
               </Link>

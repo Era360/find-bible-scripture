@@ -26,7 +26,11 @@ const parseNotFound = (text: string) => {
 };
 
 const parseScripture = (text: string) => {
-  return `${text.trim().split(" ")[0]} ${text.trim().split(" ")[1]}`;
+  let response = text.trim().split(" ");
+  if (response.length === 3) {
+    return `${response[0]} ${response[1]} ${response[2]}`;
+  }
+  return `${response[0]} ${response[1]}`;
 };
 
 export type Data = {
@@ -91,9 +95,12 @@ export default async function handler(
       console.log("Fetching from openai....");
       const completion = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `Find a scripture in the Bible that matches a description, 
-        if its not in the bible just say "not found" dont say anything else, the response should be in format of book : chapter : starting verse - ending verse, 
-        Dont say what the scripture says and no any other text is allowed. Everything should be in one line. Here is the description: ${req.body.query}`,
+        prompt: `
+        Find a scripture in the Bible that matches a description, if its not in the bible just say "not found" dont say anything else.
+        the response should be in format of book : chapter : starting verse - ending verse.
+        Dont say what the scripture says and no any other text is allowed. Everything should be in one line. 
+        Some descriptions can be in other languages other than Engish and some can be as short as one word, just try and get the relevant verse in the bible.
+        Here is the description: ${req.body.query}`,
         max_tokens: 20,
       });
       theScripture = completion.data.choices[0].text as string;
