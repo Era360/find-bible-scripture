@@ -1,12 +1,40 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 
 // local imports
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
 export default function Home() {
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(
+    window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  useEffect(() => {
+    const handleColorSchemeChange = (e: MediaQueryListEvent) => {
+      setIsDarkTheme(e.matches);
+    };
+
+    const colorSchemeMediaQuery = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    );
+    colorSchemeMediaQuery.addEventListener("change", handleColorSchemeChange);
+
+    return () => {
+      colorSchemeMediaQuery.removeEventListener(
+        "change",
+        handleColorSchemeChange
+      );
+    };
+  }, []);
+
+  const logoSrc = isDarkTheme
+    ? "/images/bible/svg/light.svg"
+    : "/images/bible/svg/dark.svg";
+
   return (
     <div className="flex flex-col min-h-screen">
       <Head>
@@ -43,6 +71,15 @@ export default function Home() {
         </div>
       </div>
       <Footer />
+      <div className="absolute bottom-0 w-full mx-auto overflow-hidden -z-10 opacity-10 ">
+        <Image
+          className="flex items-center w-10/12 mx-auto -mb-4"
+          src={logoSrc}
+          width={500}
+          height={500}
+          alt="Find Bible Scripture"
+        />
+      </div>
     </div>
   );
 }
