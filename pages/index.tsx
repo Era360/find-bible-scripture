@@ -71,7 +71,7 @@ export default function Home() {
         </div>
       </div>
       <Footer />
-      <div className="absolute bottom-0 w-full mx-auto overflow-hidden -z-10 opacity-10 blur">
+      <div className="absolute bottom-0 w-full mx-auto overflow-hidden -z-10 opacity-10 ">
         <Image
           className="flex items-center w-10/12 mx-auto -mb-4"
           src={logoSrc}
