@@ -55,6 +55,10 @@ function Header() {
               />
             </Link>
           </div>
+          <ul className="flex gap-4 text-white">
+            <a href="/thanks">Thanks</a>
+            <a href="/contribution">Contribute</a>
+          </ul>
           <div className="hidden sm:block">
             {auth_.user ? (
               <div className="flex items-center space-x-4">
@@ -102,6 +106,7 @@ function Header() {
                 Sign Up
               </Link>
             )}
+            u
           </div>
           <div className="block sm:hidden">
             <Popover
