@@ -36,9 +36,6 @@ function Header() {
       );
     };
   }, []);
-  const logoSrc = isDarkTheme
-    ? "/images/logo/brand-logo-light.svg"
-    : "/images/logo/brand-logo.svg";
 
   return (
     <nav className="mx-6 border-b-2 border-azure-100/50 dark:border-azure-800 text-azure-50 dark:text-azure-900 sm:mx-10">
@@ -48,7 +45,11 @@ function Header() {
             <Link href="/" className="text-xl font-bold">
               <Image
                 className="w-28"
-                src={logoSrc}
+                src={
+                  isDarkTheme
+                    ? "/images/logo/brand-logo-light.svg"
+                    : "/images/logo/brand-logo.svg"
+                }
                 width={500}
                 height={500}
                 alt="Find Bible Scripture"
@@ -57,42 +58,37 @@ function Header() {
           </div>
           <div className="hidden sm:block">
             {auth_.user ? (
-              <div className="flex items-center space-x-4">
-                <p className="font-medium">{auth_.user.displayName}</p>
-                <Popover
-                  content={
-                    <div className="px-4 py-2 ">
-                      <div
-                        className="flex items-center space-x-2 cursor-pointer text-azure-100 dark:text-azure-900"
-                        onClick={() => {
-                          signOut(auth);
-                          navigate.push("/search");
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          fill="currentColor"
-                          className="bi bi-box-arrow-right"
-                          viewBox="0 0 16 16"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
-                          />
-                          <path
-                            fill-rule="evenodd"
-                            d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
-                          />
-                        </svg>
-                        <p> Sign out </p>
-                      </div>
-                    </div>
-                  }
-                >
+              <div className="flex items-center space-x-4 cursor-pointer">
+                <div className="flex items-center space-x-4 text-white peer">
                   <Avatar user_image={auth_.user.photoURL} />
-                </Popover>
+                  <p className="font-medium">{auth_.user.displayName}</p>
+                </div>
+                <div
+                  className="hidden transition-all duration-1000 cursor-pointer peer-hover:block text-azure-900 dark:text-azure-100"
+                  onClick={() => {
+                    signOut(auth);
+                    navigate.push("/search");
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    className="text-red-600"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+                    />
+                  </svg>
+                  {/* <p> Sign out </p> */}
+                </div>
               </div>
             ) : (
               <Link
