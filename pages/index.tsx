@@ -31,10 +31,6 @@ export default function Home() {
     };
   }, []);
 
-  const logoSrc = isDarkTheme
-    ? "/images/bible/svg/light.svg"
-    : "/images/bible/svg/dark.svg";
-
   return (
     <div className="flex flex-col min-h-screen">
       <Head>
@@ -74,7 +70,11 @@ export default function Home() {
       <div className="absolute bottom-0 w-full mx-auto overflow-hidden -z-10 opacity-10 ">
         <Image
           className="w-[100%] mx-auto md:-mb-4 md:w-10/12"
-          src={logoSrc}
+          src={
+            isDarkTheme
+            ? "/images/bible/svg/light.svg"
+            : "/images/bible/svg/dark.svg"
+          }
           width={0}
           height={0}
           sizes="100vw"
