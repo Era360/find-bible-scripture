@@ -73,10 +73,11 @@ export default function Home() {
       <Footer />
       <div className="absolute bottom-0 w-full mx-auto overflow-hidden -z-10 opacity-10 ">
         <Image
-          className="flex items-center w-10/12 mx-auto -mb-4"
+          className="w-[100%] mx-auto md:-mb-4 md:w-10/12"
           src={logoSrc}
-          width={500}
-          height={500}
+          width={0}
+          height={0}
+          sizes="100vw"
           alt="Find Bible Scripture"
         />
       </div>
