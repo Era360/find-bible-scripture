@@ -91,7 +91,6 @@ export default async function handler(
 
     /////////////////////////////////////////////////////////
     // OPENAI
-    console.log("The API KEY IS: ", process.env.OPENAI_API_KEY);
     try {
       console.log("Fetching from openai....");
       const completion = await openai.completions.create({
