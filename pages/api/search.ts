@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "firebase-admin";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
 // Firebase Initiatization
 if (firebaseAdmin.apps.length === 0) {
@@ -14,10 +14,10 @@ if (firebaseAdmin.apps.length === 0) {
 }
 
 // OpenAi Initiatization
-const configuration = new Configuration({
+const configuration = {
   apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+};
+const openai = new OpenAI(configuration);
 
 const parseNotFound = (text: string) => {
   return text.trim().toLowerCase().endsWith(".")
@@ -91,9 +91,10 @@ export default async function handler(
 
     /////////////////////////////////////////////////////////
     // OPENAI
+    console.log("The API KEY IS: ", process.env.OPENAI_API_KEY);
     try {
       console.log("Fetching from openai....");
-      const completion = await openai.createCompletion({
+      const completion = await openai.completions.create({
         model: "text-davinci-003",
         prompt: `
         Find a scripture in the Bible that matches a description, if its not in the bible just say "not found" dont say anything else.
@@ -103,11 +104,11 @@ export default async function handler(
         Here is the description: ${req.body.query}`,
         max_tokens: 20,
       });
-      theScripture = completion.data.choices[0].text as string;
-      console.log(`Response: ${completion.data.choices[0].text}`);
+      theScripture = completion.choices[0].text as string;
+      console.log(`Response: ${completion.choices[0].text}`);
       console.log(
         `Parsed response: ${parseScripture(
-          completion.data.choices[0].text as string
+          completion.choices[0].text as string
         )}`
       );
     } catch (error: any) {
