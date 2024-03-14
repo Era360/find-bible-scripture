@@ -19,18 +19,12 @@ const configuration = {
 };
 const openai = new OpenAI(configuration);
 
-const parseNotFound = (text: string) => {
-  return text.trim().toLowerCase().endsWith(".")
-    ? text.trim().toLowerCase().split(".")[0]
-    : text.trim().toLowerCase();
+const verseNotFound = (response: string) => {
+  return JSON.parse(response).text === "not found";
 };
 
-const parseScripture = (text: string) => {
-  let response = text.trim().split(" ");
-  if (response.length === 3) {
-    return `${response[0]} ${response[1]} ${response[2]}`;
-  }
-  return `${response[0]} ${response[1]}`;
+const parseScripture = (response: string) => {
+  return JSON.parse(response).text;
 };
 
 export type Data = {
@@ -93,23 +87,31 @@ export default async function handler(
     // OPENAI
     try {
       console.log("Fetching from openai....");
-      const completion = await openai.completions.create({
-        model: "text-davinci-003",
-        prompt: `
-        Find a scripture in the Bible that matches a description, if its not in the bible just say "not found" dont say anything else.
-        the response should be in format of book : chapter : starting verse - ending verse.
-        Dont say what the scripture says and no any other text is allowed. Everything should be in one line. 
-        Some descriptions can be in other languages other than Engish and some can be as short as one word, just try and get the relevant verse in the bible.
-        Here is the description: ${req.body.query}`,
-        max_tokens: 20,
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        response_format: {
+          type: "json_object",
+        },
+        max_tokens: 50,
+        messages: [
+          {
+            role: "system",
+            content: `You are a language model trained to find Bible references based on user descriptions. 
+            Your task is to provide a Bible reference that matches the user's description, regardless of the language used. If the description does not match any Bible reference,
+            respond with a json object with the key "text" and the value "not found".
+
+            If the description matches a Bible reference, respond with a json object with the key "text" and the value being the Bible reference in a format of book : chapter : starting verse - ending verse
+            `,
+          },
+          {
+            role: "user",
+            content: req.body.query,
+          },
+        ],
       });
-      theScripture = completion.choices[0].text as string;
-      console.log(`Response: ${completion.choices[0].text}`);
-      console.log(
-        `Parsed response: ${parseScripture(
-          completion.choices[0].text as string
-        )}`
-      );
+      theScripture = completion.choices[0].message.content as string;
+      console.log(`Response: ${theScripture}`);
+      console.log(`Parsed response: ${parseScripture(theScripture)}`);
     } catch (error: any) {
       console.log("Failed Fetching from openai....");
       if (error.response) {
@@ -128,7 +130,7 @@ export default async function handler(
     await userRef.update({ credits: FieldValue.increment(-1) });
 
     try {
-      if (parseNotFound(theScripture).includes("not found")) {
+      if (verseNotFound(theScripture)) {
         if (req.body.storyId) {
           console.log(
             `updating not found scripture: ${req.body.storyId}, of user: ${userId} ....`
