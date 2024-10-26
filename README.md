@@ -18,7 +18,7 @@ git clone https://github.com/Era360/find-bible-scripture
 
 ### Storing Firebase project configurations in .env
 
-Create a `.env` file in root directory of project. And store your Firebase Project Configurations in it, as shown in the .example.env file.
+Create a `.env` file in root directory of the project. And store your Firebase Project Configurations in it, as shown in the .example.env file.
 
 Also get your `OPENAI API keys` from [here](https://platform.openai.com/account/api-keys) and paste them on your `.env` file.
 
