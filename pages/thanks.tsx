@@ -34,10 +34,10 @@ export default function About() {
   return (
     <div className="flex flex-col min-h-screen surface">
       <Head>
-        <title>About the Team | Find Bible Scripture</title>
+        <title>Meet Our Team | Find Bible Scripture</title>
         <meta
           name="description"
-          content="Meet the team behind Find Bible Scripture - a tool to discover the Bible in a whole new way."
+          content="Meet the passionate developers behind Find Bible Scripture - innovative AI-powered biblical search technology."
         />
       </Head>
 
@@ -45,9 +45,9 @@ export default function About() {
 
       <main className="container flex-grow max-w-4xl px-4 py-8 mx-auto">
         <div className="mb-12 text-center">
-          <h1 className="mb-4 heading-1">Thanks to</h1>
-          <p className="text-azure-600 body-1 dark:text-azure-300">
-            People behind Find Bible Scripture
+          <h1 className="mb-4 heading-1">Meet Our Team</h1>
+          <p className="body-1 text-azure-600 dark:text-azure-300">
+            The passionate developers behind Find Bible Scripture
           </p>
         </div>
 
@@ -69,10 +69,10 @@ export default function About() {
                 Lead Developer
               </p>
               <p className="mb-4 text-azure-700 body-1 dark:text-azure-200">
-                Lead developer behind the core functionality and architecture of
-                Find Bible Scripture. Passionate about creating robust
-                applications that help people engage with scripture in
-                meaningful ways.
+                Passionate software engineer and architect behind Find Bible
+                Scripture. Dedicated to creating innovative tools that make
+                biblical study more accessible and meaningful for believers
+                worldwide.
               </p>
               <a
                 href="https://github.com/Era360"
@@ -104,10 +104,10 @@ export default function About() {
                 UX/UI Designer & Developer
               </p>
               <p className="mb-4 text-azure-700 body-1 dark:text-azure-200">
-                Focused on creating an intuitive and beautiful user experience
-                through thoughtful design and frontend development. Combines
-                design expertise with development skills to make Bible study
-                more accessible.
+                Creative designer and frontend developer with a passion for
+                crafting intuitive user experiences. Combines aesthetic design
+                with functional development to make biblical resources more
+                engaging and accessible.
               </p>
               <a
                 href="https://github.com/makindajack"

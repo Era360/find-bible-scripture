@@ -93,7 +93,7 @@ function Search() {
           }
         })
         .catch((error) => {
-          toast.error("Failed to fetch your credits.");
+          toast.error("Unable to fetch your credit information.");
           console.error(`${(error as Error).message}`);
         });
     }
@@ -103,7 +103,7 @@ function Search() {
       userData?.credits >= 1 &&
       userData?.credits <= 3
     ) {
-      toast("You are running low on credits", { icon: "⚠️" });
+      toast("You're running low on credits", { icon: "⚠️" });
     }
   }, [auth_.user, userData]);
 
@@ -152,34 +152,43 @@ function Search() {
       }
     } catch (error) {
       console.error("Error signing in with Google:", error);
-      toast.error("Failed to sign in with Google");
+      toast.error("Unable to sign in with Google. Please try again.");
     }
   };
 
   const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!searchQuery.trim()) {
-      toast("Please enter a story to search for scripture.", { icon: "🤷🏾" });
+      toast(
+        "Please describe a biblical story or situation to search for verses.",
+        { icon: "🤷🏾" }
+      );
       return;
     }
 
     if (!auth_.user) {
-      toast.error("Please sign in to search for scripture.");
+      toast.error("Please sign in to search for Scripture verses.");
       return;
     }
 
     if (userData.credits === 0) {
-      toast.error("You are out of credits. Please contact support.", {
-        duration: 6000,
-      });
+      toast.error(
+        "You're out of credits. Please contact support for assistance.",
+        {
+          duration: 6000,
+        }
+      );
       return;
     }
 
     if (searchQuery.length < 50) {
-      toast("The more you describe, the better the results.", {
-        icon: "🛈",
-        duration: 6000,
-      });
+      toast(
+        "The more detailed your description, the better the search results.",
+        {
+          icon: "🛈",
+          duration: 6000,
+        }
+      );
     }
 
     setSearchLoading(true);
@@ -237,7 +246,7 @@ function Search() {
 
       sethistoryData((prev) => [...prev, newHistoryItem]);
       setSearchQuery("");
-      toast.success("Scripture found!");
+      toast.success("Scripture found successfully!");
 
       // Update user credits
       if (userData.credits !== null) {
@@ -248,7 +257,7 @@ function Search() {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to search for scripture"
+          : "Unable to search for Scripture. Please try again."
       );
     } finally {
       setSearchLoading(false);
@@ -258,10 +267,10 @@ function Search() {
   return (
     <div className="flex flex-col min-h-screen surface">
       <Head>
-        <title>Bible Scripture Search | Find Bible Scripture</title>
+        <title>Scripture Search | Find Bible Scripture</title>
         <meta
           name="description"
-          content="Search for Bible verses by sharing your stories and situations. Our AI helps you find relevant scripture passages."
+          content="Search for Bible verses by describing stories and situations. AI-powered biblical search makes finding Scripture intuitive and fast."
         />
       </Head>
       <Header />
@@ -284,11 +293,12 @@ function Search() {
                   className="mx-auto mb-4"
                 />
                 <h3 className="mb-4 heading-3">
-                  Welcome to Bible Scripture Search
+                  Welcome to Find Bible Scripture
                 </h3>
                 <p className="max-w-md mx-auto text-azure-600 body-1 dark:text-azure-400">
-                  Share your stories and situations, and discover relevant Bible
-                  verses that speak to your heart.
+                  Discover biblical wisdom by describing stories, situations, or
+                  themes. Our AI will find the perfect Scripture passages for
+                  you.
                 </p>
               </div>
 
@@ -315,9 +325,10 @@ function Search() {
                 height={60}
                 className="mx-auto mb-4"
               />
-              <h3 className="mb-2 heading-4">Start Your Findings</h3>
+              <h3 className="mb-2 heading-4">Begin Your Scripture Search</h3>
               <p className="text-azure-600 body-2 dark:text-azure-400">
-                Share a story or situation to find relevant Bible verses
+                Describe a biblical story, parable, or situation to discover
+                relevant verses
               </p>
             </div>
           </div>
@@ -396,9 +407,7 @@ function Search() {
                           className="px-2 py-1 text-xs font-medium tracking-wide uppercase transition-colors rounded cursor-pointer text-azure-500 dark:text-azure-400 hover:bg-azure-200 dark:hover:bg-azure-700"
                           onClick={() => {
                             navigator.clipboard.writeText("Scripture Found");
-                            toast.success(
-                              "'Scripture Found' copied to clipboard!"
-                            );
+                            toast.success("Label copied to clipboard!");
                           }}
                           title="Click to copy"
                         >
@@ -410,7 +419,7 @@ function Search() {
                       !hist.scriptureText ? (
                         <div className="text-center">
                           <p className="mb-3 text-red-600 dark:text-red-400 body-2">
-                            No scripture found for this story
+                            No matching Scripture found for this story
                           </p>
                         </div>
                       ) : (
@@ -420,9 +429,7 @@ function Search() {
                             onClick={() => {
                               if (hist.scripture) {
                                 navigator.clipboard.writeText(hist.scripture);
-                                toast.success(
-                                  "Scripture reference copied to clipboard!"
-                                );
+                                toast.success("Scripture reference copied!");
                               }
                             }}
                             title="Click to copy scripture reference"
@@ -436,9 +443,7 @@ function Search() {
                                 navigator.clipboard.writeText(
                                   hist.scriptureText
                                 );
-                                toast.success(
-                                  "Scripture text copied to clipboard!"
-                                );
+                                toast.success("Scripture text copied!");
                               }
                             }}
                             title="Click to copy scripture text"
@@ -480,7 +485,7 @@ function Search() {
                   <textarea
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Share your story or situation to find relevant Bible verses..."
+                    placeholder="Describe a biblical story, parable, or situation you'd like to find verses for..."
                     className="w-full p-3 text-azure-900 bg-white dark:text-azure-100 dark:bg-azure-800  rounded-xl input resize-none min-h-[60px] max-h-[120px] shadow-sm"
                     rows={2}
                     disabled={searchLoading || userData.credits === 0}
@@ -508,7 +513,7 @@ function Search() {
                         userData.credits !== null ? userData.credits : "..."
                       }`
                     );
-                    toast.success("Credits info copied to clipboard!");
+                    toast.success("Credit information copied!");
                   }}
                   title="Click to copy"
                 >
@@ -522,7 +527,8 @@ function Search() {
 
               {userData.credits === 0 && (
                 <p className="mt-2 text-sm text-center text-red-600 dark:text-red-400">
-                  You are out of credits. Please contact support for more.
+                  You're out of credits. Please contact support for more
+                  assistance.
                 </p>
               )}
             </div>

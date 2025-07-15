@@ -37,11 +37,11 @@ export default function Home() {
     <div className="flex flex-col min-h-screen surface">
       <Head>
         <title>
-          Find Bible Scripture | Discover the Bible in a whole new way
+          Find Bible Scripture | Revolutionary AI-Powered Biblical Search
         </title>
         <meta
           name="description"
-          content="Search for Bible verses based on story descriptions, parables, or events with AI-powered intelligent search."
+          content="Discover Bible verses instantly by describing stories, parables, or situations. Our AI-powered search makes biblical study intuitive and accessible."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -55,16 +55,16 @@ export default function Home() {
             <h1 className="mb-6 heading-1">
               Discover the&nbsp;
               <span className="text-azure-600 dark:text-azure-400">Bible</span>
-              &nbsp;in a whole new way
+              &nbsp;in a revolutionary way
             </h1>
 
             <p className="max-w-2xl mx-auto mb-8 body-1 text-azure-600 dark:text-azure-300">
-              Search for&nbsp;
+              Simply describe a biblical story, parable, or situation, and
+              instantly find the corresponding&nbsp;
               <span className="font-semibold text-azure-600 dark:text-azure-400">
                 Bible verses
               </span>
-              &nbsp;based on story descriptions, parables, or events in the
-              Bible to deepen your understanding in seconds.
+              &nbsp;using our AI-powered search technology.
             </p>
 
             {/* CTA Button */}
@@ -73,14 +73,14 @@ export default function Home() {
                 href="/search"
                 className="button button-primary px-8 py-4 min-w-[200px] animate-press"
               >
-                Start Searching
+                Begin Your Search
               </Link>
 
               <Link
                 href="/thanks"
                 className="button button-secondary px-8 py-4 min-w-[200px]"
               >
-                About the Project
+                Learn More
               </Link>
             </div>
           </div>
@@ -103,10 +103,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 heading-4">AI-Powered Search</h3>
+              <h3 className="mb-2 heading-4">Smart AI Search</h3>
               <p className="body-2 text-azure-600 dark:text-azure-300">
-                Use natural language to find Bible verses by describing stories,
-                themes, or concepts.
+                Describe biblical stories, themes, or situations in your own
+                words to find the exact verses you need.
               </p>
             </div>
 
@@ -126,10 +126,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 heading-4">Instant Results</h3>
+              <h3 className="mb-2 heading-4">Lightning Fast</h3>
               <p className="body-2 text-azure-600 dark:text-azure-300">
-                Get relevant Bible verses in seconds, not minutes. Fast and
-                accurate search results.
+                Get precise biblical references within seconds, complete with
+                full verse text and context.
               </p>
             </div>
 
@@ -149,10 +149,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 heading-4">Deepen Faith</h3>
+              <h3 className="mb-2 heading-4">Enhance Your Study</h3>
               <p className="body-2 text-azure-600 dark:text-azure-300">
-                Discover connections and deepen your understanding of Scripture
-                through intelligent search.
+                Discover meaningful connections in Scripture and deepen your
+                biblical understanding effortlessly.
               </p>
             </div>
           </div>
