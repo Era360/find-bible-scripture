@@ -105,6 +105,9 @@ function Header() {
             <Link href="/thanks" className="nav-item">
               About
             </Link>
+            <Link href="/help-center" className="nav-item">
+              Help
+            </Link>
             <Link href="/contribution" className="nav-item">
               Contribute
             </Link>
@@ -181,6 +184,13 @@ function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
+              </Link>
+              <Link
+                href="/help-center"
+                className="block w-full text-left menu-item"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Help
               </Link>
               <Link
                 href="/contribution"

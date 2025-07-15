@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { auth } from "@/firebase";
 import Avatar from "./avatar";
 import useOnClickOutside from "../hooks/useClickOutside";
@@ -143,30 +144,21 @@ const AvatarDropdown: React.FC<AvatarDropdownProps> = ({ user }) => {
                 {/* Help Submenu */}
                 {helpMenuOpen && (
                   <div className="ml-7">
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // TODO: Implement help center functionality
-                        console.log("Help center clicked");
-                        setIsOpen(false);
-                      }}
+                    {" "}
+                    <Link
+                      href="/help-center"
+                      onClick={() => setIsOpen(false)}
                       className="block px-4 py-2 text-sm text-azure-600 dark:text-azure-400 hover:bg-azure-50 dark:hover:bg-azure-800 transition-colors"
                     >
                       Help Center
-                    </a>
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // TODO: Implement terms functionality
-                        console.log("Terms clicked");
-                        setIsOpen(false);
-                      }}
+                    </Link>
+                    <Link
+                      href="/terms-and-conditions"
+                      onClick={() => setIsOpen(false)}
                       className="block px-4 py-2 text-sm text-azure-600 dark:text-azure-400 hover:bg-azure-50 dark:hover:bg-azure-800 transition-colors"
                     >
                       Terms & Conditions
-                    </a>
+                    </Link>
                     <a
                       href="#"
                       onClick={(e) => {
