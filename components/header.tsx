@@ -102,7 +102,7 @@ function Header() {
               </Link>
             )}
             <Link href="/thanks" className="nav-item">
-              Thanks
+              About
             </Link>
             <Link href="/contribution" className="nav-item">
               Contribute
@@ -147,7 +147,7 @@ function Header() {
               </div>
             ) : (
               <Link href="/search" className="button button-primary">
-                Get Started
+                Start Searching
               </Link>
             )}
           </div>
