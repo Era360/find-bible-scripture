@@ -108,9 +108,6 @@ function Header() {
             <Link href="/help-center" className="nav-item">
               Help
             </Link>
-            {/* <Link href="/contribution" className="nav-item">
-              Contribute
-            </Link> */}
           </nav>
 
           {/* User Authentication - Desktop */}

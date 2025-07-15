@@ -45,7 +45,7 @@ function Search() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
   };
 
   useEffect(() => {
@@ -110,7 +110,7 @@ function Search() {
   useEffect(() => {
     const fetchHistory = async () => {
       if (auth_.user) {
-        const historyRef = collection(db, `users/${auth_.user.uid}/messages`);
+        const historyRef = collection(db, `users/${auth_.user.uid}/history`);
         const q = query(historyRef, orderBy("time", "asc"));
 
         const querySnapshot = await getDocs(q);
@@ -226,7 +226,7 @@ function Search() {
 
       // Save to Firebase
       if (auth_.user) {
-        const messageRef = collection(db, `users/${auth_.user.uid}/messages`);
+        const messageRef = collection(db, `users/${auth_.user.uid}/history`);
         await addDoc(messageRef, {
           story: searchQuery,
           scripture: data.scripture,
@@ -384,7 +384,7 @@ function Search() {
                   {/* Scripture Response - Always left aligned */}
                   <div className="flex justify-start animate-scaleIn">
                     <div
-                      className={`max-w-[80%] md:max-w-[70%] p-4 rounded-2xl bg-[var(--brand-secondary)] dark:bg-[var(--brand-tertiary)] rounded-bl-sm hover:shadow-lg transition-shadow duration-200 ${
+                      className={`max-w-[80%] md:max-w-[70%] p-4 rounded-2xl bg-[var(--brand-secondary)] dark:bg-[var(--neutral-background-5)] rounded-bl-sm hover:shadow-lg transition-shadow duration-200 ${
                         hist.scripture?.trim() === "not found" ||
                         !hist.scriptureText
                           ? "border-l-4 border-red-400 dark:border-red-500"
@@ -403,16 +403,18 @@ function Search() {
                           height={20}
                           className="mr-2"
                         />
-                        <span
-                          className="px-2 py-1 text-xs font-medium tracking-wide uppercase transition-colors rounded cursor-pointer text-azure-500 dark:text-azure-400 hover:bg-azure-200 dark:hover:bg-azure-700"
+                        <p
+                          className="px-2 py-1 mb-2 font-semibold text-[var(--brand-primary)] transition-colors rounded cursor-pointer dark:text-[var(--brand-secondary)] body-2 hover:bg-[var(--brand-secondary)] dark:hover:bg-[var(--brand-tertiary)]"
                           onClick={() => {
-                            navigator.clipboard.writeText("Scripture Found");
-                            toast.success("Label copied to clipboard!");
+                            if (hist.scripture) {
+                              navigator.clipboard.writeText(hist.scripture);
+                              toast.success("Scripture reference copied!");
+                            }
                           }}
-                          title="Click to copy"
+                          title="Click to copy scripture reference"
                         >
-                          Scripture Found
-                        </span>
+                          {hist.scripture}
+                        </p>
                       </div>
 
                       {hist.scripture?.trim() === "not found" ||
@@ -423,34 +425,18 @@ function Search() {
                           </p>
                         </div>
                       ) : (
-                        <div>
-                          <p
-                            className="px-2 py-1 mb-2 font-semibold text-[var(--brand-primary)] transition-colors rounded cursor-pointer dark:text-[var(--brand-secondary)] body-2 hover:bg-[var(--brand-secondary)] dark:hover:bg-[var(--brand-tertiary)]"
-                            onClick={() => {
-                              if (hist.scripture) {
-                                navigator.clipboard.writeText(hist.scripture);
-                                toast.success("Scripture reference copied!");
-                              }
-                            }}
-                            title="Click to copy scripture reference"
-                          >
-                            {hist.scripture}
-                          </p>
-                          <p
-                            className="px-2 py-1 italic leading-relaxed transition-colors rounded cursor-pointer text-azure-700 dark:text-azure-200 body-1 hover:bg-azure-50 dark:hover:bg-azure-800/30"
-                            onClick={() => {
-                              if (hist.scriptureText) {
-                                navigator.clipboard.writeText(
-                                  hist.scriptureText
-                                );
-                                toast.success("Scripture text copied!");
-                              }
-                            }}
-                            title="Click to copy scripture text"
-                          >
-                            &ldquo;{hist.scriptureText}&rdquo;
-                          </p>
-                        </div>
+                        <p
+                          className="px-2 py-1 italic leading-relaxed transition-colors rounded cursor-pointer text-azure-700 dark:text-azure-200 body-1 hover:bg-azure-50 dark:hover:bg-azure-800/30"
+                          onClick={() => {
+                            if (hist.scriptureText) {
+                              navigator.clipboard.writeText(hist.scriptureText);
+                              toast.success("Scripture text copied!");
+                            }
+                          }}
+                          title="Click to copy scripture text"
+                        >
+                          &ldquo;{hist.scriptureText}&rdquo;
+                        </p>
                       )}
 
                       <div className="flex justify-end mt-2">
@@ -527,7 +513,7 @@ function Search() {
 
               {userData.credits === 0 && (
                 <p className="mt-2 text-sm text-center text-red-600 dark:text-red-400">
-                  You're out of credits. Please contact support for more
+                  You&apos;re out of credits. Please contact support for more
                   assistance.
                 </p>
               )}
