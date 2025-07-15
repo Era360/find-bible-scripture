@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useAuth } from "@/utils/use-auth";
 import { auth } from "@/firebase";
 import Avatar from "./avatar/avatar";
+import AvatarDropdown from "./avatar/avatar-dropdown";
 
 function Header() {
   const auth_ = useAuth();
@@ -112,39 +113,7 @@ function Header() {
           {/* User Authentication - Desktop */}
           <div className="items-center hidden space-x-3 md:flex">
             {auth_.user ? (
-              <div className="flex items-center space-x-3">
-                <div className="flex items-center space-x-2">
-                  <Avatar user_image={auth_.user.photoURL} />
-                  <span className="font-medium body-2">
-                    {auth_.user.displayName?.split(" ")[0] || "User"}
-                  </span>
-                </div>
-                <button
-                  onClick={() => {
-                    signOut(auth);
-                    navigate.push("/search");
-                  }}
-                  className="p-2 text-red-600 button button-ghost hover:text-red-700"
-                  aria-label="Sign out"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
-                    />
-                  </svg>
-                </button>
-              </div>
+              <AvatarDropdown user={auth_.user} />
             ) : (
               <Link href="/search" className="button button-primary">
                 Start Searching
@@ -225,23 +194,8 @@ function Header() {
 
               {/* Mobile Auth Section */}
               {auth_.user ? (
-                <div>
-                  <div className="flex items-center px-3 py-2 space-x-2">
-                    <Avatar user_image={auth_.user.photoURL} />
-                    <span className="body-2">
-                      {auth_.user.displayName?.split(" ")[0] || "User"}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      signOut(auth);
-                      navigate.push("/search");
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-red-600 menu-item hover:text-red-700"
-                  >
-                    Sign out
-                  </button>
+                <div className="px-3 py-2">
+                  <AvatarDropdown user={auth_.user} />
                 </div>
               ) : (
                 <Link
