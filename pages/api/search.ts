@@ -17,6 +17,14 @@ if (firebaseAdmin.apps.length === 0) {
 const configuration = {
   apiKey: process.env.OPENAI_API_KEY,
 };
+
+// Check if OpenAI API key is configured
+if (!process.env.OPENAI_API_KEY) {
+  console.error(
+    "OpenAI API key is not configured. Please set OPENAI_API_KEY environment variable."
+  );
+}
+
 const openai = new OpenAI(configuration);
 
 const verseNotFound = (response: string) => {
@@ -33,6 +41,7 @@ export type Data = {
   time?: Date;
   scripture?: string;
   scriptureText?: string;
+  error?: string;
 };
 
 interface ExtendedNextApiRequest extends NextApiRequest {
@@ -49,6 +58,14 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   if (req.method === "POST") {
+    // Check if OpenAI API key is available
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({
+        text: "OpenAI API key is not configured on the server",
+        error: "OpenAI API key is not configured on the server",
+      });
+    }
+
     /////////////////////////////////////////////////////
     // Firebase
     let userId: string = "";
@@ -57,6 +74,13 @@ export default async function handler(
       // Get the user's ID token from the Authorization header
       const idToken = req.headers.authorization?.split("Bearer ")[1];
 
+      if (!idToken) {
+        return res.status(401).json({
+          text: "No authentication token provided",
+          error: "No authentication token provided",
+        });
+      }
+
       // Verify the ID token to ensure that the request is coming from an authenticated user
       const decodedToken = await firebaseAdmin
         .auth()
@@ -64,8 +88,11 @@ export default async function handler(
       userId = decodedToken.uid;
       console.log(`User ${userId} is authenticated`);
     } catch (error) {
-      console.error(error);
-      res.status(401).send({ text: "Unauthorized" });
+      console.error("Authentication error:", error);
+      return res.status(401).json({
+        text: "Authentication failed",
+        error: "Authentication failed",
+      });
     }
 
     // Get the user's credits from the Firestore database
@@ -87,6 +114,9 @@ export default async function handler(
     // OPENAI
     try {
       console.log("Fetching from openai....");
+      console.log("OpenAI API Key configured:", !!process.env.OPENAI_API_KEY);
+      console.log("Query:", req.body.query);
+
       const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         response_format: {
@@ -114,14 +144,39 @@ export default async function handler(
       console.log(`Parsed response: ${parseScripture(theScripture)}`);
     } catch (error: any) {
       console.log("Failed Fetching from openai....");
+      console.log("Error type:", typeof error);
+      console.log("Error constructor:", error.constructor.name);
+
+      let errorMessage = "3rd party error";
+
       if (error.response) {
-        console.log(error.response.status);
-        console.log(error.response.data);
+        console.log("OpenAI API Error Status:", error.response.status);
+        console.log("OpenAI API Error Data:", error.response.data);
+
+        // Provide more specific error messages
+        if (error.response.status === 401) {
+          errorMessage = "OpenAI API key is invalid or expired";
+        } else if (error.response.status === 429) {
+          errorMessage =
+            "OpenAI API rate limit exceeded. Please try again later.";
+        } else if (error.response.status === 500) {
+          errorMessage =
+            "OpenAI API is currently experiencing issues. Please try again later.";
+        } else {
+          errorMessage = `OpenAI API error: ${error.response.status}`;
+        }
+      } else if (error.code) {
+        console.log("OpenAI Error Code:", error.code);
+        console.log("OpenAI Error Message:", error.message);
+        errorMessage = `OpenAI error (${error.code}): ${error.message}`;
       } else {
-        console.log(error.message);
+        console.log("OpenAI Error Message:", error.message);
+        errorMessage = `OpenAI connection error: ${error.message}`;
       }
-      return res.status(500).send({
-        text: "3rd party error",
+
+      return res.status(500).json({
+        text: errorMessage,
+        error: errorMessage,
       });
     }
     //////////////////////////////////////////////////

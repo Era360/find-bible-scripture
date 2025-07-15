@@ -1,32 +1,84 @@
-import { useEffect, useState } from "react";
-import { signInWithPopup } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import toast, { Toaster } from "react-hot-toast";
-import Image from "next/image";
-import Head from "next/head";
-import Link from "next/link";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  doc,
+  getDoc,
+  setDoc,
+  addDoc,
+} from "firebase/firestore";
 import { useRouter } from "next/router";
+import Head from "next/head";
+import { signInWithPopup } from "firebase/auth";
+import toast, { Toaster } from "react-hot-toast";
 
 // Local imports
 import Header from "@/components/header";
 import { useAuth } from "@/utils/use-auth";
 import { auth, db, google_provider } from "@/firebase";
-import Ellipsis from "@/components/ellipsis/ellipsis";
 import { Data } from "./api/search";
-import Footer from "@/components/footer";
-import Popover from "@/components/popover";
+import Ellipsis from "@/components/ellipsis/ellipsis";
+import Link from "next/link";
+import Image from "next/image";
+
+interface HistoryData extends Data {
+  id: string;
+  chatId?: string;
+}
 
 type UserDataType = {
   credits: number | null;
 };
 
-export default function Search() {
-  const [results, setResults] = useState<Data>({ text: "" });
+function Search() {
+  const [historyData, sethistoryData] = useState<Array<HistoryData>>([]);
+  const [noData, setnoData] = useState<boolean>(false);
   const [loading, setloading] = useState<boolean>(false);
-  const [query, setQuery] = useState("");
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [userData, setuserData] = useState<UserDataType>({ credits: null });
   const auth_ = useAuth();
   const navigate = useRouter();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [historyData]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Removed chat options and chats list click outside handlers
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      setIsDarkTheme(darkModeQuery.matches);
+
+      const handleColorSchemeChange = (e: MediaQueryListEvent) => {
+        setIsDarkTheme(e.matches);
+      };
+
+      darkModeQuery.addEventListener("change", handleColorSchemeChange);
+
+      return () => {
+        darkModeQuery.removeEventListener("change", handleColorSchemeChange);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     if (userData?.credits === null && auth_.user) {
@@ -56,290 +108,429 @@ export default function Search() {
   }, [auth_.user, userData]);
 
   useEffect(() => {
-    const { story } = navigate.query;
-    if (query === "" && story) {
-      getDoc(doc(db, `users/${auth_.user?.uid}/history/${story}`))
-        .then((docSnapshot) => {
-          setQuery(docSnapshot.data()?.story);
-        })
-        .catch((error) => {
-          console.error((error as Error).message);
-        });
-    }
-  }, [query, auth_.user?.uid, navigate.query]);
+    const fetchHistory = async () => {
+      if (auth_.user) {
+        const historyRef = collection(db, `users/${auth_.user.uid}/messages`);
+        const q = query(historyRef, orderBy("time", "asc"));
 
-  const handleSubmit = async (event: React.FormEvent) => {
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+          setnoData(true);
+        } else {
+          let theData: HistoryData[] = [];
+          querySnapshot.forEach((doc) => {
+            theData.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+          });
+          sethistoryData(theData);
+        }
+      }
+    };
+
+    if (historyData.length == 0 && !noData) {
+      fetchHistory();
+    }
+  }, [auth_.user, historyData.length, noData]);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, google_provider);
+      const userRef = doc(db, `users/${result.user.uid}`);
+      const userDoc = await getDoc(userRef);
+
+      if (!userDoc.exists()) {
+        await setDoc(userRef, {
+          credits: 10,
+          name: result.user.displayName,
+          email: result.user.email,
+          photoURL: result.user.photoURL,
+          createdAt: new Date(),
+        });
+        setuserData({ credits: 10 });
+      }
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      toast.error("Failed to sign in with Google");
+    }
+  };
+
+  const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!query) {
-      toast("Nothing has been typed.", { icon: "🤷🏾" });
+    if (!searchQuery.trim()) {
+      toast("Please enter a story to search for scripture.", { icon: "🤷🏾" });
+      return;
+    }
+
+    if (!auth_.user) {
+      toast.error("Please sign in to search for scripture.");
       return;
     }
 
     if (userData.credits === 0) {
-      toast.error("You are out of credits. please pay.", {
+      toast.error("You are out of credits. Please contact support.", {
         duration: 6000,
       });
       return;
     }
 
-    if (query.length < 50) {
+    if (searchQuery.length < 50) {
       toast("The more you describe, the better the results.", {
         icon: "🛈",
         duration: 6000,
       });
     }
 
-    setloading(true);
-    let bodyData = {
-      query,
-      storyId: navigate.query["story"] || false,
-    };
+    setSearchLoading(true);
     try {
+      // Get the user's ID token for authentication
+      const idToken = await auth_.user?.getIdToken();
+
+      if (!idToken) {
+        throw new Error("Authentication failed. Please sign in again.");
+      }
+
       const response = await fetch("/api/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${await auth_.user?.getIdToken()}`,
+          Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify(bodyData),
+        body: JSON.stringify({
+          query: searchQuery,
+          storyId: false,
+        }),
       });
-      if (response.status === 200) {
-        const results = (await response.json()) as Data;
-        setResults(results);
-        setQuery("");
-        setuserData({ credits: null });
-        setloading(false);
-        navigate.replace(navigate.asPath.split("?")[0]);
-      } else if (response.status === 400) {
-        setloading(false);
-        toast.error("Failed to get the bible verse.");
-      } else {
-        setloading(false);
-        toast.error("Something went wrong. Please try again later.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle specific error cases
+        if (response.status === 401) {
+          throw new Error("Authentication failed. Please sign in again.");
+        } else if (response.status === 500) {
+          throw new Error(data.error || data.text || "Server error occurred");
+        } else {
+          throw new Error(data.error || data.text || "Failed to search");
+        }
+      }
+
+      // Save to Firebase
+      if (auth_.user) {
+        const messageRef = collection(db, `users/${auth_.user.uid}/messages`);
+        await addDoc(messageRef, {
+          story: searchQuery,
+          scripture: data.scripture,
+          scriptureText: data.scriptureText,
+          time: new Date(),
+        });
+      }
+
+      // Update local state
+      const newHistoryItem = {
+        id: Date.now().toString(),
+        story: searchQuery,
+        scripture: data.scripture,
+        scriptureText: data.scriptureText,
+        time: new Date(),
+      };
+
+      sethistoryData((prev) => [...prev, newHistoryItem]);
+      setSearchQuery("");
+      toast.success("Scripture found!");
+
+      // Update user credits
+      if (userData.credits !== null) {
+        setuserData((prev) => ({ ...prev, credits: prev.credits! - 1 }));
       }
     } catch (error) {
-      setloading(false);
-      console.error(error);
-      toast.error("Something went wrong. Please try again later.");
-    }
-  };
-
-  const withGoogle = async () => {
-    try {
-      setloading(true);
-      google_provider.setCustomParameters({ prompt: "select_account" });
-      const user = await signInWithPopup(auth, google_provider);
-      setloading(false);
-      toast.success(`Welcome, ${user.user.displayName}`);
-      getDoc(doc(db, `users/${user.user.uid}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-          setuserData({
-            credits: snapshot.data().credits,
-          });
-        } else {
-          setDoc(doc(db, `users/${user.user.uid}`), {
-            credits: 10,
-          });
-          setuserData({
-            credits: 10,
-          });
-        }
-      });
-    } catch (error) {
-      setloading(false);
-      console.error((error as Error).message);
-    }
-  };
-
-  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(
-    window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
-
-  useEffect(() => {
-    const handleColorSchemeChange = (e: MediaQueryListEvent) => {
-      setIsDarkTheme(e.matches);
-    };
-
-    const colorSchemeMediaQuery = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    );
-    colorSchemeMediaQuery.addEventListener("change", handleColorSchemeChange);
-
-    return () => {
-      colorSchemeMediaQuery.removeEventListener(
-        "change",
-        handleColorSchemeChange
+      console.error("Search error:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to search for scripture"
       );
-    };
-  }, []);
-
-  const logoSrc = isDarkTheme
-    ? "/images/logo/brand-logo-light.svg"
-    : "/images/logo/brand-logo.svg";
+    } finally {
+      setSearchLoading(false);
+    }
+  };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen surface">
       <Head>
-        <title>Search | Discover the Bible in a whole new way</title>
+        <title>Bible Scripture Search | Find Bible Scripture</title>
+        <meta
+          name="description"
+          content="Search for Bible verses by sharing your stories and situations. Our AI helps you find relevant scripture passages."
+        />
       </Head>
-      {auth_.user ? (
-        <>
-          <Header />
-          <div className="flex flex-col justify-center px-4 py-16 mx-auto my-auto space-y-2 md:py-32 md:mx-auto md:space-y-10 max-w-7xl sm:px-6 lg:px-8">
-            <h1 className="mb-8 text-xl font-bold text-center md:text-3xl">
-              Describe a small story, parable or event in the&nbsp;
-              <span className="dark:text-azure-300 text-azure-400">Bible</span>.
-            </h1>
-            <form onSubmit={handleSubmit} className="w-full">
-              <textarea
-                name="query"
-                rows={5}
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Type here..."
-                className={`w-full p-2.5 text-sm md:text-base bg-azure-100/50 text-azure-900 dark:text-azure-200 dark:bg-azure-950 rounded-2xl outline-none ${
-                  userData.credits !== null
-                    ? userData.credits === 0
-                      ? "ring-4 ring-red-700"
-                      : userData.credits <= 3
-                      ? "ring-4 ring-yellow-500"
-                      : "ring-4 ring-green-700"
-                    : "ring-4 ring-azure-800"
-                }`}
-              />
-              <div className="flex items-center justify-end mt-2">
-                <Popover
-                  content={
-                    <div className="flex flex-col items-center justify-center p-4 space-y-2 dark:text-azure-800 text-azure-50">
-                      <h3 className="font-bold">How to pay</h3>
-                      <p className="text-sm text-justify">
-                        We currently don&apos;t support online payment, you can
-                        contact me through&nbsp;{" "}
-                        <Link
-                          className="underline"
-                          href="mailto:mkumboelia@gmail.com"
-                        >
-                          my email
-                        </Link>
-                      </p>
-                    </div>
+      <Header />
+      <Toaster />
+
+      <main className="container flex flex-col flex-grow max-w-4xl px-4 py-8 mx-auto">
+        {!auth_.user ? (
+          <div className="flex items-center justify-center flex-grow">
+            <div className="space-y-6 text-center">
+              <div className="mb-8">
+                <Image
+                  src={
+                    isDarkTheme
+                      ? "/images/bible/svg/light.svg"
+                      : "/images/bible/svg/dark.svg"
                   }
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    className="bi bi-info-circle"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                  </svg>
-                </Popover>
-                <p className="ml-3 text-sm text-azure-500 md:text-base">
-                  Quota remaining: {userData?.credits}
+                  alt="Bible"
+                  width={80}
+                  height={80}
+                  className="mx-auto mb-4"
+                />
+                <h3 className="mb-4 heading-3">
+                  Welcome to Bible Scripture Search
+                </h3>
+                <p className="max-w-md mx-auto text-azure-600 body-1 dark:text-azure-400">
+                  Share your stories and situations, and discover relevant Bible
+                  verses that speak to your heart.
                 </p>
               </div>
+
               <button
-                type="submit"
-                disabled={loading}
-                className={`${
-                  loading && "opacity-30"
-                } block px-7 py-2 md:px-9 mx-auto mt-10 border rounded w-fit`}
+                onClick={handleGoogleSignIn}
+                className="flex items-center gap-3 mx-auto button button-primary animate-press"
               >
-                Search
+                <Image src="/google.png" alt="Google" width={20} height={20} />
+                Sign in with Google
               </button>
-            </form>
-            <div className="mt-10 text-center">
-              {loading ? (
-                <div>
-                  <Ellipsis />
-                </div>
-              ) : (
-                <>
-                  {results.scripture && (
-                    <div className="px-10 py-2 mx-auto border-2 rounded-md border-azure-600 w-fit">
-                      <p>
-                        <span className="font-bold">Story: </span>
-                        {results.story}
+            </div>
+          </div>
+        ) : noData ? (
+          <div className="flex items-center justify-center flex-grow">
+            <div className="space-y-4 text-center">
+              <Image
+                src={
+                  isDarkTheme
+                    ? "/images/bible/svg/light.svg"
+                    : "/images/bible/svg/dark.svg"
+                }
+                alt="Bible"
+                width={60}
+                height={60}
+                className="mx-auto mb-4"
+              />
+              <h3 className="mb-2 heading-4">Start Your Findings</h3>
+              <p className="text-azure-600 body-2 dark:text-azure-400">
+                Share a story or situation to find relevant Bible verses
+              </p>
+            </div>
+          </div>
+        ) : historyData.length === 0 ? (
+          <div className="flex items-center justify-center flex-grow">
+            <Ellipsis />
+          </div>
+        ) : (
+          <div className="flex-grow mb-20 overflow-y-auto">
+            {" "}
+            {/* Added mb-20 for floating search space */}
+            <div className="space-y-4">
+              {historyData.map((hist, index) => (
+                <div key={index} className="space-y-3">
+                  {/* User Story - Always right aligned */}
+                  <div className="flex justify-end animate-scaleIn">
+                    <div className="max-w-[80%] md:max-w-[70%] p-4 rounded-2xl bg-azure-100 dark:bg-azure-800 rounded-br-sm hover:shadow-lg transition-shadow duration-200">
+                      <div className="flex items-center justify-end mb-2">
+                        <span className="text-xs font-medium tracking-wide uppercase text-azure-500 dark:text-azure-400">
+                          Your Story
+                        </span>
+                        <Image
+                          src={
+                            auth_.user?.photoURL ||
+                            "/images/logo/brand-logo.svg"
+                          }
+                          alt="User"
+                          width={20}
+                          height={20}
+                          className="ml-2 rounded-full"
+                        />
+                      </div>
+                      <p className="leading-relaxed text-azure-700 body-1 dark:text-azure-200">
+                        {hist.story}
                       </p>
-                      <p
-                        className={`text-lg font-bold ${
-                          results.scripture.trim() !== "not found"
-                            ? "border-b-4"
-                            : "border-t-2"
-                        }`}
-                      >
-                        {results.scripture}
-                      </p>
-                      <p className="my-5 text-xl">{results.scriptureText}</p>
+                      <div className="flex justify-end mt-2">
+                        <span className="text-xs text-azure-400 dark:text-azure-500">
+                          {hist.time
+                            ? new Date(
+                                (hist.time as any).seconds
+                                  ? (hist.time as any).seconds * 1000
+                                  : hist.time
+                              ).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : "Now"}
+                        </span>
+                      </div>
                     </div>
-                  )}
-                </>
+                  </div>
+
+                  {/* Scripture Response - Always left aligned */}
+                  <div className="flex justify-start animate-scaleIn">
+                    <div
+                      className={`max-w-[80%] md:max-w-[70%] p-4 rounded-2xl bg-[var(--brand-secondary)] dark:bg-[var(--brand-tertiary)] rounded-bl-sm hover:shadow-lg transition-shadow duration-200 ${
+                        hist.scripture?.trim() === "not found" ||
+                        !hist.scriptureText
+                          ? "border-l-4 border-red-400 dark:border-red-500"
+                          : "border-l-4 border-[var(--brand-primary)] dark:border-[var(--brand-secondary)]"
+                      }`}
+                    >
+                      <div className="flex items-center mb-2">
+                        <Image
+                          src={
+                            isDarkTheme
+                              ? "/images/bible/svg/light.svg"
+                              : "/images/bible/svg/dark.svg"
+                          }
+                          alt="Bible Scripture Bot"
+                          width={20}
+                          height={20}
+                          className="mr-2"
+                        />
+                        <span
+                          className="px-2 py-1 text-xs font-medium tracking-wide uppercase transition-colors rounded cursor-pointer text-azure-500 dark:text-azure-400 hover:bg-azure-200 dark:hover:bg-azure-700"
+                          onClick={() => {
+                            navigator.clipboard.writeText("Scripture Found");
+                            toast.success(
+                              "'Scripture Found' copied to clipboard!"
+                            );
+                          }}
+                          title="Click to copy"
+                        >
+                          Scripture Found
+                        </span>
+                      </div>
+
+                      {hist.scripture?.trim() === "not found" ||
+                      !hist.scriptureText ? (
+                        <div className="text-center">
+                          <p className="mb-3 text-red-600 dark:text-red-400 body-2">
+                            No scripture found for this story
+                          </p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p
+                            className="px-2 py-1 mb-2 font-semibold text-[var(--brand-primary)] transition-colors rounded cursor-pointer dark:text-[var(--brand-secondary)] body-2 hover:bg-[var(--brand-secondary)] dark:hover:bg-[var(--brand-tertiary)]"
+                            onClick={() => {
+                              if (hist.scripture) {
+                                navigator.clipboard.writeText(hist.scripture);
+                                toast.success(
+                                  "Scripture reference copied to clipboard!"
+                                );
+                              }
+                            }}
+                            title="Click to copy scripture reference"
+                          >
+                            {hist.scripture}
+                          </p>
+                          <p
+                            className="px-2 py-1 italic leading-relaxed transition-colors rounded cursor-pointer text-azure-700 dark:text-azure-200 body-1 hover:bg-azure-50 dark:hover:bg-azure-800/30"
+                            onClick={() => {
+                              if (hist.scriptureText) {
+                                navigator.clipboard.writeText(
+                                  hist.scriptureText
+                                );
+                                toast.success(
+                                  "Scripture text copied to clipboard!"
+                                );
+                              }
+                            }}
+                            title="Click to copy scripture text"
+                          >
+                            &ldquo;{hist.scriptureText}&rdquo;
+                          </p>
+                        </div>
+                      )}
+
+                      <div className="flex justify-end mt-2">
+                        <span className="text-xs text-azure-400 dark:text-azure-500">
+                          {hist.time
+                            ? new Date(
+                                (hist.time as any).seconds
+                                  ? (hist.time as any).seconds * 1000
+                                  : hist.time
+                              ).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : "Now"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div ref={messagesEndRef} />
+          </div>
+        )}
+
+        {/* Search Input - Fixed at bottom */}
+        {auth_.user && (
+          <div className="fixed bottom-0 left-0 right-0 p-4">
+            <div className="max-w-4xl mx-auto">
+              <form onSubmit={handleSearch} className="flex gap-2">
+                <div className="flex-grow">
+                  <textarea
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Share your story or situation to find relevant Bible verses..."
+                    className="w-full p-3 text-azure-900 bg-white dark:text-azure-100 dark:bg-azure-800  rounded-xl input resize-none min-h-[60px] max-h-[120px] shadow-sm"
+                    rows={2}
+                    disabled={searchLoading || userData.credits === 0}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={
+                    searchLoading ||
+                    !searchQuery.trim() ||
+                    userData.credits === 0
+                  }
+                  className="px-6 py-3 shadow-sm button button-primary animate-press rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {searchLoading ? <Ellipsis /> : "Send"}
+                </button>
+              </form>
+
+              <div className="flex items-center justify-between mt-2">
+                <p
+                  className="text-xs transition-colors cursor-pointer text-azure-500 dark:text-azure-400 hover:text-azure-700 dark:hover:text-azure-200"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `Credits remaining: ${
+                        userData.credits !== null ? userData.credits : "..."
+                      }`
+                    );
+                    toast.success("Credits info copied to clipboard!");
+                  }}
+                  title="Click to copy"
+                >
+                  💳 Credits remaining:{" "}
+                  {userData.credits !== null ? userData.credits : "..."}
+                </p>
+                <p className="text-xs text-azure-400 dark:text-azure-500">
+                  Each search uses 1 credit
+                </p>
+              </div>
+
+              {userData.credits === 0 && (
+                <p className="mt-2 text-sm text-center text-red-600 dark:text-red-400">
+                  You are out of credits. Please contact support for more.
+                </p>
               )}
-              <Link
-                href="/history"
-                className={`${
-                  results.scriptureText && "mt-5"
-                } block w-fit mx-auto hover:border rounded px-5 py-2`}
-              >
-                View History
-              </Link>
             </div>
           </div>
-        </>
-      ) : (
-        <div className="flex container mx-auto px-8 sm:px-32 lg:px-64 xl:px-0 flex-row md:flex-col py-16 my-auto space-y-2 md:space-y-10">
-          <div className="flex bg-azure-100 items-center text-center dark:bg-azure-950 backdrop-blur-md rounded-3xl w-full xl:w-5/12 flex-col px-8 py-20 lg:py-24 my-auto gap-4 sm:px-14 lg:px-20">
-            <div className="flex-shrink-0 mb-4">
-              <Link href="/" className="text-xl font-bold">
-                <Image
-                  className="w-28"
-                  src={logoSrc}
-                  width={500}
-                  height={500}
-                  alt="Find Bible Scripture"
-                />
-              </Link>
-            </div>
-            <h3 className="text-xl font-bold md:text-2xl lg:text-2xl">
-              Have a story in mind and would you like to know which&nbsp;
-              <span className="dark:text-azure-300 text-azure-400">
-                Bible Scripture
-              </span>
-              &nbsp;relates to it?
-            </h3>
-            <div className="max-w-2xl text-md px-4 md:max-w-lg">
-              Join us and receive a collection of&nbsp;
-              <span className="font-bold dark:text-azure-300 text-azure-400">
-                10 free
-              </span>
-              &nbsp;stories to explore their corresponding Bible Scriptures.
-              Gain insight into the Word of God through your cherished
-              narratives.
-            </div>
-            {loading ? (
-              <Ellipsis />
-            ) : (
-              <button
-                onClick={() => withGoogle()}
-                className="flex items-center mt-4 px-6 py-3 space-x-2 font-semibold rounded-lg w-fit dark:bg-azure-50 bg-azure-950 dark:text-azure-800 text-azure-50"
-              >
-                <span>Continue with</span>
-                <Image
-                  src="/google.png"
-                  width={20}
-                  height={20}
-                  alt="google's logo"
-                />
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-      <Toaster />
+        )}
+      </main>
     </div>
   );
 }
+
+export default Search;
