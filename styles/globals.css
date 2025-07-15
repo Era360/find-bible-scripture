@@ -1,13 +1,577 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@import url("https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap");
+
+@theme {
+  --color-azure-50: #f4f7fb;
+  --color-azure-100: #e7eef7;
+  --color-azure-200: #cadbed;
+  --color-azure-300: #9cbedd;
+  --color-azure-400: #679bc9;
+  --color-azure-500: #447fb3;
+  --color-azure-600: #336699;
+  --color-azure-700: #2a517a;
+  --color-azure-800: #264666;
+  --color-azure-900: #243c56;
+  --color-azure-950: #182739;
+}
 
 :root {
-  font-family: "Times New Roman";
+  /* Colors */
+  --neutral-foreground-1: var(--color-azure-500);
+  --neutral-foreground-2: var(--color-azure-600);
+  --neutral-foreground-3: var(--color-azure-700);
+  --neutral-foreground-4: var(--color-azure-800);
+  --neutral-foreground-5: var(--color-azure-900);
+  --neutral-foreground-6: var(--color-azure-950);
+  --neutral-background-1: var(--color-azure-50);
+  --neutral-background-2: var(--color-azure-100);
+  --neutral-background-3: var(--color-azure-200);
+  --neutral-background-4: var(--color-azure-300);
+  --neutral-background-5: var(--color-azure-400);
+  --neutral-background-6: var(--color-azure-500);
+  --neutral-stroke-1: var(--color-azure-400);
+  --neutral-stroke-2: var(--color-azure-500);
+  --brand-primary: var(--color-azure-500);
+  --brand-secondary: var(--color-azure-400);
+  --brand-tertiary: var(--color-azure-300);
+  /* Elevation */
+  /* Elevation shadows for light theme */
+  --surface-elevation-1: 0 1px 3px var(--color-azure-950) rgba(0.12),
+    0 1px 2px var(--color-azure-950) rgba(0.24);
+  --surface-elevation-2: 0 3px 6px var(--color-azure-950) rgba(0.16),
+    0 3px 6px var(--color-azure-950) rgba(0.23);
+  --surface-elevation-3: 0 10px 20px var(--color-azure-950) rgba(0.19),
+    0 6px 6px var(--color-azure-950) rgba(0.23);
+  --surface-elevation-4: 0 14px 28px var(--color-azure-950) rgba(0.25),
+    0 10px 10px var(--color-azure-950) rgba(0.22);
+  --surface-azure-alpha: color-mix(
+    in srgb,
+    var(--color-azure-950) 10%,
+    transparent
+  );
+  /* Example: --surface-azure-alpha: --alpha(var(--color-azure-950) / 10%); for Tailwind v4 syntax */
+  --border-radius-small: 4px;
+  --border-radius-medium: 6px;
+  --border-radius-large: 8px;
+
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto",
+    "Helvetica Neue", sans-serif;
+  font-feature-settings: "liga" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Dark theme variables */
 @media (prefers-color-scheme: dark) {
   :root {
-    font-family: "Times New Roman";
+    --neutral-foreground-1: var(--color-azure-50);
+    --neutral-foreground-2: var(--color-azure-100);
+    --neutral-foreground-3: var(--color-azure-200);
+    --neutral-foreground-4: var(--color-azure-300);
+    --neutral-foreground-5: var(--color-azure-400);
+    --neutral-foreground-6: var(--color-azure-500);
+    --neutral-background-1: var(--color-azure-950);
+    --neutral-background-2: var(--color-azure-900);
+    --neutral-background-3: var(--color-azure-800);
+    --neutral-background-4: var(--color-azure-700);
+    --neutral-background-5: var(--color-azure-600);
+    --neutral-background-6: var(--color-azure-500);
+    --neutral-stroke-1: var(--color-azure-400);
+    --neutral-stroke-2: var(--color-azure-500);
+    --brand-primary: var(--color-azure-500);
+    --brand-secondary: var(--color-azure-400);
+    --brand-tertiary: var(--color-azure-300);
+    --surface-elevation-1: 0 1px 3px var(--color-azure-50) rgba(0.12),
+      0 1px 2px var(--color-azure-50) rgba(0.24);
+    --surface-elevation-2: 0 3px 6px var(--color-azure-50) rgba(0.16),
+      0 3px 6px var(--color-azure-50) rgba(0.23);
+    --surface-elevation-3: 0 10px 20px var(--color-azure-50) rgba(0.19),
+      0 6px 6px var(--color-azure-50) rgba(0.23);
+    --surface-elevation-4: 0 14px 28px var(--color-azure-50) rgba(0.25),
+      0 10px 10px var(--color-azure-50) rgba(0.22);
+    --surface-azure-alpha: color-mix(
+      in srgb,
+      var(--color-azure-50) 10%,
+      transparent
+    );
+    /* Example: --surface-azure-alpha: --alpha(var(--color-azure-50) / 10%); for Tailwind v4 syntax */
+    --border-radius-small: 4px;
+    --border-radius-medium: 6px;
+    --border-radius-large: 8px;
   }
 }
+
+.dark {
+  --neutral-foreground-1: var(--color-azure-50);
+  --neutral-foreground-2: var(--color-azure-100);
+  --neutral-foreground-3: var(--color-azure-200);
+  --neutral-foreground-4: var(--color-azure-300);
+  --neutral-foreground-5: var(--color-azure-400);
+  --neutral-foreground-6: var(--color-azure-500);
+  --neutral-background-1: var(--color-azure-950);
+  --neutral-background-2: var(--color-azure-900);
+  --neutral-background-3: var(--color-azure-800);
+  --neutral-background-4: var(--color-azure-700);
+  --neutral-background-5: var(--color-azure-600);
+  --neutral-background-6: var(--color-azure-500);
+  --neutral-stroke-1: var(--color-azure-400);
+  --neutral-stroke-2: var(--color-azure-500);
+  --brand-primary: var(--color-azure-500);
+  --brand-secondary: var(--color-azure-400);
+  --brand-tertiary: var(--color-azure-300);
+  --surface-elevation-1: 0 1px 3px var(--color-azure-50) rgba(0.12),
+    0 1px 2px var(--color-azure-50) rgba(0.24);
+  --surface-elevation-2: 0 3px 6px var(--color-azure-50) rgba(0.16),
+    0 3px 6px var(--color-azure-50) rgba(0.23);
+  --surface-elevation-3: 0 10px 20px var(--color-azure-50) rgba(0.19),
+    0 6px 6px var(--color-azure-50) rgba(0.23);
+  --surface-elevation-4: 0 14px 28px var(--color-azure-50) rgba(0.25),
+    0 10px 10px var(--color-azure-50) rgba(0.22);
+  --surface-azure-alpha: color-mix(
+    in srgb,
+    var(--color-azure-50) 10%,
+    transparent
+  );
+  /* Example: --surface-azure-alpha: --alpha(var(--color-azure-50) / 10%); for Tailwind v4 syntax */
+  --border-radius-small: 4px;
+  --border-radius-medium: 6px;
+  --border-radius-large: 8px;
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--neutral-background-1);
+  color: var(--neutral-foreground-1);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Button Styles */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--border-radius-medium);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  border: 1px solid transparent;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.button:focus-visible {
+  box-shadow: 0 0 0 2px var(--brand-primary);
+}
+
+.button-primary {
+  background-color: var(--brand-primary);
+  color: white;
+}
+
+.button-primary:hover {
+  background-color: var(--brand-secondary);
+}
+
+.button-primary:active {
+  background-color: var(--brand-tertiary);
+}
+
+.button-secondary {
+  background-color: var(--neutral-background-4);
+  color: var(--neutral-foreground-1);
+}
+
+.button-secondary:hover {
+  background-color: var(--neutral-background-3);
+}
+
+.button-ghost {
+  background-color: transparent;
+  color: var(--neutral-foreground-1);
+}
+
+.button-ghost:hover {
+  background-color: var(--neutral-background-2);
+}
+
+/* Card Styles */
+.card {
+  background-color: var(--neutral-background-2);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--surface-elevation-1);
+  padding: 20px;
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: var(--surface-elevation-2);
+}
+
+.card-elevated {
+  box-shadow: var(--surface-elevation-3);
+}
+
+.card-0 {
+  background-color: var(--neutral-background-3);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--surface-elevation-1);
+  padding: 20px;
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.card-0:hover {
+  box-shadow: var(--surface-elevation-2);
+}
+
+.card-0-elevated {
+  box-shadow: var(--surface-elevation-3);
+}
+
+.card-1 {
+  background-color: var(--neutral-background-4);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--surface-elevation-1);
+  padding: 20px;
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.card-1:hover {
+  box-shadow: var(--surface-elevation-2);
+}
+
+.card-1-elevated {
+  box-shadow: var(--surface-elevation-3);
+}
+
+/* Input Styles */
+.input {
+  background-color: var(--neutral-background-2);
+  border-radius: var(--border-radius-large);
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--neutral-foreground-1);
+  transition: border-color 0.15s ease-in-out;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 1px var(--brand-primary);
+}
+
+.input::placeholder {
+  color: var(--neutral-foreground-6);
+}
+
+/* Typography */
+.heading-1 {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 52px;
+  color: var(--neutral-foreground-1);
+}
+
+.heading-2 {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+  color: var(--neutral-foreground-1);
+}
+
+.heading-3 {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--neutral-foreground-1);
+}
+
+.heading-4 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--neutral-foreground-1);
+}
+
+.body-1 {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--neutral-foreground-1);
+}
+
+.body-2 {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--neutral-foreground-1);
+}
+
+.caption {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--neutral-foreground-3);
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background-color: var(--neutral-stroke-1);
+  border: none;
+  margin: 16px 0;
+}
+
+/* Navigation */
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-medium);
+  color: var(--neutral-foreground-1);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.nav-item:hover {
+  background-color: var(--neutral-background-2);
+}
+
+.nav-item.active {
+  background-color: var(--brand-primary);
+  color: white;
+}
+
+/* Custom scrollbar with styling */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neutral-background-2);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--neutral-stroke-2);
+  border-radius: 6px;
+  border: 2px solid var(--neutral-background-2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--neutral-foreground-3);
+}
+
+/* Backdrop */
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+/* Focus indicators */
+.focus-visible:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Surface styles */
+.surface {
+  background-color: var(--neutral-background-1);
+}
+
+.surface-elevated {
+  box-shadow: var(--surface-elevation-2);
+}
+
+.surface-variant {
+  background-color: var(--neutral-background-2);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: var(--brand-primary);
+  color: white;
+}
+
+/* Progress Bar */
+.progress {
+  width: 100%;
+  height: 4px;
+  background-color: var(--neutral-stroke-1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--brand-primary);
+  transition: width 0.3s ease;
+}
+
+/* Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--neutral-stroke-1);
+  border-top: 2px solid var(--brand-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-content {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--neutral-background-3);
+  color: var(--neutral-foreground-1);
+  padding: 8px 12px;
+  border-radius: var(--border-radius-medium);
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease-in-out;
+  z-index: 1000;
+}
+
+.tooltip:hover .tooltip-content {
+  opacity: 1;
+}
+
+/* Menu */
+.menu {
+  background-color: var(--neutral-background-1);
+  border: 1px solid var(--neutral-stroke-1);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--surface-elevation-3);
+  padding: 8px;
+  min-width: 200px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-medium);
+  color: var(--neutral-foreground-1);
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.menu-item:hover {
+  background-color: var(--neutral-background-2);
+}
+
+.menu-item.disabled {
+  color: var(--neutral-foreground-3);
+  cursor: not-allowed;
+}
+
+/* Checkbox */
+.checkbox {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkbox .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: var(--neutral-background-1);
+  border: 1px solid var(--neutral-stroke-1);
+  border-radius: var(--border-radius-small);
+  transition: all 0.15s ease-in-out;
+}
+
+.checkbox input:checked ~ .checkmark {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox .checkmark:after {
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* All color usage now references CSS variables, e.g. var(--neutral-foreground-1), var(--brand-primary), etc. */
